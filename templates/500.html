@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Error del Servidor - ComunidadEducativa{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="error-template py-5">
+                <h1 class="display-1 text-danger">500</h1>
+                <h2 class="display-4">¡Error del servidor!</h2>
+                <div class="error-details my-4">
+                    <p class="lead">Lo sentimos, ha ocurrido un error inesperado en el servidor.</p>
+                    <p>Nuestro equipo ha sido notificado y está trabajando para solucionarlo.</p>
+                </div>
+                <div class="error-actions mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-home me-2"></i>Ir al Inicio
+                    </a>
+                    <a href="{% url 'appComunidad:contacto' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-envelope me-2"></i>Contactar Soporte
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

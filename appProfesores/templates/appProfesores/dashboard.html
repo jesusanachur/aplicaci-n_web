@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard del Profesor - Comunidad Educativa{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">Bienvenido, {{ user.get_full_name|default:user.username }}</h1>
+            
+            <!-- Resumen de estadísticas -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Cursos Activos</h5>
+                            <p class="card-text display-4">{{ total_cursos }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Estudiantes</h5>
+                            <p class="card-text display-4">{{ total_estudiantes }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-info mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Lecciones</h5>
+                            <p class="card-text display-4">{{ total_lecciones }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones rápidas -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Acciones Rápidas</h5>
+                        </div>
+                        <div class="card-body">
+                            <a href="{% url 'appProfesores:crear_curso' %}" class="btn btn-primary me-2">
+                                <i class="fas fa-plus"></i> Nuevo Curso
+                            </a>
+                            <a href="{% url 'appProfesores:cursos' %}" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-book"></i> Ver Todos los Cursos
+                            </a>
+                            <a href="{% url 'appProfesores:perfil' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-user-edit"></i> Editar Perfil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cursos recientes -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Mis Cursos Recientes</h5>
+                            <a href="{% url 'appProfesores:cursos' %}" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+                        </div>
+                        <div class="card-body">
+                            {% if cursos_recientes %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Curso</th>
+                                                <th>Estudiantes</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for curso in cursos_recientes %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="{% url 'appProfesores:curso_detalle' curso.id %}">
+                                                            {{ curso.titulo }}
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ curso.estudiantes_count }}</td>
+                                                    <td>
+                                                        {% if curso.activo %}
+                                                            <span class="badge bg-success">Activo</span>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary">Inactivo</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <a href="{% url 'appProfesores:editar_curso' curso.id %}" class="btn btn-sm btn-outline-secondary">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <a href="{% url 'appProfesores:estudiantes_curso' curso.id %}" class="btn btn-sm btn-outline-info">
+                                                            <i class="fas fa-users"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info mb-0">
+                                    No tienes cursos registrados. <a href="{% url 'appProfesores:crear_curso' %}">Crea tu primer curso</a> para comenzar.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

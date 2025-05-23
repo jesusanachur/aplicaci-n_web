@@ -1,0 +1,23 @@
+[bandit]
+# Excluyendo directorios que no queremos analizar
+exclude_dirs: .venv, venv, virtual, migrations, static, media, node_modules, .git
+
+# Niveles de severidad y confianza
+# Bajo = 1, Medio = 2, Alto = 3
+# Puedes ajustar estos valores según necesites
+# En este caso solo reportamos problemas de severidad media y alta
+skips: 
+
+# Se pueden ignorar pruebas específicas
+# Por ejemplo:
+# skips: B101,B102
+
+# Ajuste de severidad para pruebas específicas
+# Ejemplo: aumentar la severidad de las inyecciones SQL
+[bandit.settings]
+B608: HIGH
+
+# Si quieres personalizar criterios de las pruebas, puedes hacerlo aquí
+[bandit.test_config]
+# Ejemplo para configurar qué funciones se consideran exec-like
+# exec_bad_functions: exec, eval, compile, os.system, os.popen

@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Dashboard de Estudiante - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/students.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Dashboard de Estudiante</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard Content -->
+<section class="dashboard-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="dashboard-sidebar">
+                    <div class="user-profile text-center">
+                        {% if user.perfil_estudiante.foto %}
+                            <img src="{{ user.perfil_estudiante.foto.url }}" alt="{{ user.username }}" class="profile-image">
+                        {% else %}
+                            <div class="profile-image-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <h4>{{ user.get_full_name }}</h4>
+                        <p class="text-muted">Estudiante</p>
+                        
+                        {% if user.perfil_estudiante.plan %}
+                            <div class="user-plan {{ user.perfil_estudiante.plan.nivel }}">
+                                {{ user.perfil_estudiante.plan.get_nivel_display }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="dashboard-nav">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'appEstudiantes:dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appEstudiantes:mis_cursos' %}">
+                                    <i class="fas fa-book me-2"></i> Mis Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appEstudiantes:cursos' %}">
+                                    <i class="fas fa-graduation-cap me-2"></i> Catálogo de Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appEstudiantes:progreso' %}">
+                                    <i class="fas fa-chart-line me-2"></i> Mi Progreso
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appEstudiantes:perfil' %}">
+                                    <i class="fas fa-user-edit me-2"></i> Editar Perfil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Welcome Card -->
+                <div class="welcome-card mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2>¡Bienvenido, {{ user.first_name }}!</h2>
+                            <p>Aquí encontrarás un resumen de tu progreso y tus cursos activos. Continúa aprendiendo y mejorando tu español.</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <a href="{% url 'appEstudiantes:cursos' %}" class="btn btn-primary">Ver Cursos Disponibles</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{ inscripciones.count }}</h3>
+                                <p>Cursos Inscritos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{ progreso_lecciones }}</h3>
+                                <p>Lecciones Completadas</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>{{ porcentaje_progreso|floatformat:1 }}%</h3>
+                                <p>Progreso General</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progress Overview -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Resumen de Progreso</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="progress-chart">
+                            <canvas id="progressChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Courses -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Cursos Recientes</h5>
+                        <a href="{% url 'appEstudiantes:mis_cursos' %}" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+                    </div>
+                    <div class="card-body">
+                        {% if inscripciones %}
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Curso</th>
+                                            <th>Nivel</th>
+                                            <th>Progreso</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for inscripcion in inscripciones|slice:":5" %}
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        {% if inscripcion.curso.imagen %}
+                                                            <img src="{{ inscripcion.curso.imagen.url }}" alt="{{ inscripcion.curso.titulo }}" class="course-thumbnail me-2">
+                                                        {% else %}
+                                                            <div class="course-thumbnail-placeholder me-2">
+                                                                <i class="fas fa-book"></i>
+                                                            </div>
+                                                        {% endif %}
+                                                        <div>
+                                                            <h6 class="mb-0">{{ inscripcion.curso.titulo }}</h6>
+                                                            <small class="text-muted">{{ inscripcion.curso.profesor.get_full_name }}</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge rounded-pill bg-{{ inscripcion.curso.nivel_plan.nivel }}">
+                                                        {{ inscripcion.curso.nivel_plan.get_nivel_display }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="progress">
+                                                        {% with total_lecciones=inscripcion.curso.lecciones.count %}
+                                                            {% with progreso=user.progreso_lecciones.all|filter_lecciones_curso:inscripcion.curso|filter_completadas %}
+                                                                {% with completadas=progreso|length %}
+                                                                    {% if total_lecciones > 0 %}
+                                                                        {% widthratio completadas total_lecciones 100 as porcentaje %}
+                                                                        <div class="progress-bar" role="progressbar" style="width: {{ porcentaje }}%;" aria-valuenow="{{ porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ porcentaje|floatformat:0 }}%</div>
+                                                                    {% else %}
+                                                                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                                                    {% endif %}
+                                                                {% endwith %}
+                                                            {% endwith %}
+                                                        {% endwith %}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'appEstudiantes:curso_detalle' inscripcion.curso.pk %}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-arrow-right"></i> Continuar
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                No estás inscrito en ningún curso todavía. 
+                                <a href="{% url 'appEstudiantes:cursos' %}" class="alert-link">Explora nuestros cursos</a> para comenzar tu aprendizaje.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/static/js/students.js"></script>
+<script>
+    // Progress Chart
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    const progressChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for inscripcion in inscripciones|slice:":5" %}'{{ inscripcion.curso.titulo|truncatechars:20 }}',{% endfor %}],
+            datasets: [{
+                label: 'Progreso por Curso (%)',
+                data: [
+                    {% for inscripcion in inscripciones|slice:":5" %}
+                        {% with total_lecciones=inscripcion.curso.lecciones.count %}
+                            {% with progreso=user.progreso_lecciones.all|filter_lecciones_curso:inscripcion.curso|filter_completadas %}
+                                {% with completadas=progreso|length %}
+                                    {% if total_lecciones > 0 %}
+                                        {% widthratio completadas total_lecciones 100 as porcentaje %}
+                                        {{ porcentaje|floatformat:0 }}{% if not forloop.last %},{% endif %}
+                                    {% else %}
+                                        0{% if not forloop.last %},{% endif %}
+                                    {% endif %}
+                                {% endwith %}
+                            {% endwith %}
+                        {% endwith %}
+                    {% endfor %}
+                ],
+                backgroundColor: '#0d6efd',
+                borderColor: '#0d6efd',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

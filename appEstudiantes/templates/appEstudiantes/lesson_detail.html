@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ leccion.titulo }} - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/students.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{ leccion.titulo }}</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appEstudiantes:dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appEstudiantes:curso_detalle' curso.id %}">{{ curso.titulo }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ leccion.titulo }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Lesson Content -->
+<section class="lesson-content-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Lesson Card -->
+                <div class="lesson-card card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Contenido de la Lección</h5>
+                        
+                        <div>
+                            {% if progreso.completado %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle me-1"></i> Completada
+                                </span>
+                            {% else %}
+                                <form action="{% url 'appEstudiantes:completar_leccion' leccion.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="fas fa-check me-1"></i> Marcar como completada
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        {% if leccion.video_url %}
+                            <div class="lesson-video mb-4">
+                                <div class="ratio ratio-16x9">
+                                    <iframe src="{{ leccion.video_url }}" title="{{ leccion.titulo }}" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="lesson-text">
+                            {{ leccion.contenido|safe|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Materials Card -->
+                {% if materiales %}
+                <div class="materials-card card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Materiales de la Lección</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            {% for material in materiales %}
+                                <div class="col-md-6">
+                                    <div class="material-item">
+                                        <div class="material-icon">
+                                            <i class="fas {% if material.tipo == 'pdf' %}fa-file-pdf{% elif material.tipo == 'word' %}fa-file-word{% elif material.tipo == 'excel' %}fa-file-excel{% elif material.tipo == 'powerpoint' %}fa-file-powerpoint{% elif material.tipo == 'audio' %}fa-file-audio{% elif material.tipo == 'video' %}fa-file-video{% else %}fa-file-alt{% endif %}"></i>
+                                        </div>
+                                        <div class="material-info">
+                                            <h6>{{ material.titulo }}</h6>
+                                            <p class="text-muted mb-2">{{ material.descripcion|truncatechars:50 }}</p>
+                                            <a href="{% url 'appEstudiantes:descargar_material' material.pk %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-download me-1"></i> Descargar
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Comments Card -->
+                <div class="comments-card card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Comentarios ({{ comentarios.count }})</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Comment Form -->
+                        <div class="comment-form mb-4">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    {{ form.contenido }}
+                                    {% if form.contenido.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.contenido.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-comment me-1"></i> Publicar Comentario
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Comments List -->
+                        <div class="comments-list">
+                            {% if comentarios %}
+                                {% for comentario in comentarios %}
+                                    <div class="comment-item">
+                                        <div class="comment-header d-flex justify-content-between align-items-center">
+                                            <div class="user-info d-flex align-items-center">
+                                                {% if comentario.estudiante.perfil_estudiante.foto %}
+                                                    <img src="{{ comentario.estudiante.perfil_estudiante.foto.url }}" alt="{{ comentario.estudiante.username }}" class="comment-avatar me-2">
+                                                {% else %}
+                                                    <div class="comment-avatar-placeholder me-2">
+                                                        <i class="fas fa-user"></i>
+                                                    </div>
+                                                {% endif %}
+                                                <div>
+                                                    <h6 class="mb-0">{{ comentario.estudiante.get_full_name|default:comentario.estudiante.username }}</h6>
+                                                    <small class="text-muted">{{ comentario.fecha|date:"d M, Y H:i" }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="comment-body mt-2">
+                                            <p>{{ comentario.contenido|linebreaks }}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-center py-3">
+                                    <p class="text-muted mb-0">No hay comentarios aún. ¡Sé el primero en comentar!</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="lesson-sidebar">
+                    <!-- Course Navigation Card -->
+                    <div class="course-nav-card card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Lecciones del Curso</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                {% for leccion_item in curso.lecciones.all %}
+                                    <a href="{% url 'appEstudiantes:leccion_detalle' curso.id leccion_item.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if leccion_item.id == leccion.id %}active{% endif %}">
+                                        <div>
+                                            <span class="lesson-number me-2">{{ leccion_item.numero_orden }}.</span>
+                                            {{ leccion_item.titulo }}
+                                        </div>
+                                        {% with progreso_item=user.progreso_lecciones.filter.leccion=leccion_item.first %}
+                                            {% if progreso_item.completado %}
+                                                <span class="badge bg-success rounded-pill">
+                                                    <i class="fas fa-check"></i>
+                                                </span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Course Info Card -->
+                    <div class="course-info-card card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Información del Curso</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title">{{ curso.titulo }}</h6>
+                            <p class="text-muted mb-3">{{ curso.descripcion|truncatechars:100 }}</p>
+                            
+                            <div class="instructor-info d-flex align-items-center mb-3">
+                                {% if curso.profesor.perfil_profesor.foto %}
+                                    <img src="{{ curso.profesor.perfil_profesor.foto.url }}" alt="{{ curso.profesor.get_full_name }}" class="instructor-avatar-sm me-2">
+                                {% else %}
+                                    <div class="instructor-avatar-sm-placeholder me-2">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <p class="mb-0 small">Profesor: <strong>{{ curso.profesor.get_full_name }}</strong></p>
+                                </div>
+                            </div>
+                            
+                            <div class="course-stats">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="stat-item">
+                                            <i class="fas fa-book-open me-1"></i>
+                                            <span>{{ curso.lecciones.count }} lecciones</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-item">
+                                            <i class="fas fa-clock me-1"></i>
+                                            <span>{{ curso.duracion_semanas }} semanas</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-item">
+                                            <i class="fas fa-users me-1"></i>
+                                            <span>{{ curso.estudiantes_inscritos.count }} estudiantes</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-item">
+                                            <i class="fas fa-layer-group me-1"></i>
+                                            <span>{{ curso.nivel_plan.get_nivel_display }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation Buttons -->
+                    <div class="navigation-buttons d-flex justify-content-between mb-4">
+                        {% with prev_leccion=curso.lecciones.filter.numero_orden__lt=leccion.numero_orden.last %}
+                            {% if prev_leccion %}
+                                <a href="{% url 'appEstudiantes:leccion_detalle' curso.id prev_leccion.id %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-arrow-left me-1"></i> Anterior
+                                </a>
+                            {% else %}
+                                <a href="{% url 'appEstudiantes:curso_detalle' curso.id %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-th-list me-1"></i> Índice
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                        
+                        {% with next_leccion=curso.lecciones.filter.numero_orden__gt=leccion.numero_orden.first %}
+                            {% if next_leccion %}
+                                <a href="{% url 'appEstudiantes:leccion_detalle' curso.id next_leccion.id %}" class="btn btn-primary">
+                                    Siguiente <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'appEstudiantes:curso_detalle' curso.id %}" class="btn btn-success">
+                                    <i class="fas fa-check-circle me-1"></i> Finalizar
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    
+                    <!-- Notes Card -->
+                    <div class="notes-card card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Mis Notas</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="{% url 'appEstudiantes:guardar_notas' leccion.id %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <textarea name="notas" class="form-control" rows="5" placeholder="Escribe tus notas aquí...">{{ progreso.notas }}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-save me-1"></i> Guardar Notas
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/students.js"></script>
+{% endblock %}

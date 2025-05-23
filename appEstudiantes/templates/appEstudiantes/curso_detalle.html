@@ -1,0 +1,635 @@
+{% load static custom_filters %}
+
+{% block title %}{{ curso.titulo }} - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/students.css' %}">
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+    }
+    
+    .course-features {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+        color: #2575fc;
+        margin-bottom: 1rem;
+    }
+    
+    .testimonial-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 1.5rem;
+        height: 100%;
+    }
+    
+    .testimonial-text {
+        font-style: italic;
+        margin-bottom: 1rem;
+    }
+    
+    .testimonial-author {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .enroll-cta {
+        background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        margin: 2rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-transparent p-0 mb-3">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}" class="text-white-50">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appEstudiantes:dashboard' %}" class="text-white-50">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appEstudiantes:cursos' %}" class="text-white-50">Cursos</a></li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">{{ curso.titulo|truncatechars:30 }}</li>
+                    </ol>
+                </nav>
+                <h1 class="display-4 fw-bold mb-3">{{ curso.titulo }}</h1>
+                <p class="lead mb-4">{{ curso.descripcion|truncatewords:30 }}</p>
+                <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center me-4">
+                        <i class="fas fa-star text-warning me-1"></i>
+                        <span class="me-2">4.8</span>
+                        <span class="text-white-50">(128 reseñas)</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-users me-2"></i>
+                        <span>{{ curso.estudiantes_inscritos.count }} estudiantes inscritos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Course Features -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h5>Aprendizaje en línea</h5>
+                    <p class="text-muted mb-0">Accede desde cualquier dispositivo</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h5>Certificado</h5>
+                    <p class="text-muted mb-0">Obtén tu certificado al finalizar</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h5>Soporte 24/7</h5>
+                    <p class="text-muted mb-0">Asistencia personalizada</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <h5>Acceso de por vida</h5>
+                    <p class="text-muted mb-0">Acceso ilimitado al contenido</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Course Detail Content -->
+<section class="course-detail-section pb-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Course Header -->
+                <div class="course-header mb-4">
+                    {% if curso.imagen %}
+                        <img src="{{ curso.imagen.url }}" alt="{{ curso.titulo }}" class="img-fluid rounded mb-3">
+                    {% endif %}
+                    
+                    <div class="course-info">
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-{{ curso.nivel_plan.nivel }} me-2">{{ curso.nivel_plan.get_nivel_display }}</span>
+                            <span class="text-muted"><i class="fas fa-users me-1"></i> {{ curso.estudiantes_inscritos.count }} estudiantes inscritos</span>
+                        </div>
+                        
+                        <h2>{{ curso.titulo }}</h2>
+                        
+                        <div class="instructor-info">
+                            <div class="d-flex align-items-center">
+                                {% if curso.profesor.perfil_profesor.foto %}
+                                    <img src="{{ curso.profesor.perfil_profesor.foto.url }}" alt="{{ curso.profesor.get_full_name }}" class="instructor-avatar me-2">
+                                {% else %}
+                                    <div class="instructor-avatar-placeholder me-2">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <p class="mb-0">Profesor: <span class="instructor-name">{{ curso.profesor.get_full_name }}</span></p>
+                                    <p class="text-muted mb-0">{{ curso.profesor.perfil_profesor.especialidad }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Course Description -->
+                <div class="course-description card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Descripción del Curso</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ curso.descripcion|linebreaks }}
+                    </div>
+                </div>
+                
+                <!-- Course Content -->
+                <div class="course-content card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Contenido del Curso</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if lecciones %}
+                            <div class="accordion" id="lessonsAccordion">
+                                {% for leccion in lecciones %}
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading{{ leccion.id }}">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ leccion.id }}" aria-expanded="false" aria-controls="collapse{{ leccion.id }}">
+                                                <div class="d-flex justify-content-between align-items-center w-100">
+                                                    <div class="lesson-title">
+                                                        <span class="lesson-number me-2">{{ leccion.numero_orden }}.</span>
+                                                        {{ leccion.titulo }}
+                                                        
+                                                        {% if esta_inscrito and progreso|get_item:leccion.id %}
+                                                            <span class="badge bg-success ms-2">
+                                                                <i class="fas fa-check-circle"></i> Completada
+                                                            </span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="lesson-duration">
+                                                        <i class="far fa-clock me-1"></i> {{ leccion.duracion_minutos }} min
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        </h2>
+                                        <div id="collapse{{ leccion.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ leccion.id }}" data-bs-parent="#lessonsAccordion">
+                                            <div class="accordion-body">
+                                                <div class="lesson-description mb-3">
+                                                    {{ leccion.descripcion }}
+                                                </div>
+                                                
+                                                {% if leccion.materiales.exists %}
+                                                    <div class="lesson-materials">
+                                                        <h6>Materiales:</h6>
+                                                        <ul class="list-unstyled">
+                                                            {% for material in leccion.materiales.all %}
+                                                                <li class="mb-2">
+                                                                    <i class="fas {{ material.get_tipo_icon }} me-2"></i>
+                                                                    {{ material.titulo }}
+                                                                    {% if esta_inscrito %}
+                                                                        <a href="{% url 'appEstudiantes:descargar_material' material.pk %}" class="ms-2 text-primary">
+                                                                            <i class="fas fa-download"></i> Descargar
+                                                                        </a>
+                                                                    {% endif %}
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                                
+                                                {% if esta_inscrito %}
+                                                    <div class="text-end mt-3">
+                                                        <a href="{% url 'appEstudiantes:leccion_detalle' curso.id leccion.id %}" class="btn btn-sm btn-primary">
+                                                            <i class="fas fa-play-circle me-1"></i> Ir a la lección
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="p-4 text-center">
+                                <p class="text-muted mb-0">No hay lecciones disponibles para este curso.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonials -->
+            <div class="col-12 my-5">
+                <h3 class="text-center mb-4">Lo que dicen nuestros estudiantes</h3>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="testimonial-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Estudiante" class="rounded-circle me-3" width="50">
+                                <div>
+                                    <h6 class="mb-0">María González</h6>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="testimonial-text">"Este curso superó mis expectativas. Los conceptos están explicados de manera clara y práctica."</p>
+                            <div class="testimonial-meta">
+                                <span class="text-muted">Estudiante de {{ curso.nivel_plan.get_nivel_display }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="testimonial-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Estudiante" class="rounded-circle me-3" width="50">
+                                <div>
+                                    <h6 class="mb-0">Carlos Rodríguez</h6>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="testimonial-text">"Excelente material y profesorado. Las lecciones son muy completas y fáciles de seguir."</p>
+                            <div class="testimonial-meta">
+                                <span class="text-muted">Estudiante de {{ curso.nivel_plan.get_nivel_display }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="testimonial-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Estudiante" class="rounded-circle me-3" width="50">
+                                <div>
+                                    <h6 class="mb-0">Ana Martínez</h6>
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="testimonial-text">"La mejor inversión que he hecho en mi educación. Los conocimientos adquiridos ya los estoy aplicando."</p>
+                            <div class="testimonial-meta">
+                                <span class="text-muted">Estudiante de {{ curso.nivel_plan.get_nivel_display }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="course-sidebar">
+                    <!-- Enrollment Card -->
+                    <div class="enrollment-card card mb-4 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Acceso al curso</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if esta_inscrito %}
+                                <div class="enrolled-status mb-3">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Ya estás inscrito en este curso</span>
+                                </div>
+                                
+                                {% with total_lecciones=lecciones.count %}
+                                {% with completadas=user.progreso_lecciones.filter(leccion__curso=curso, completado=True).count %}
+                                {% with porcentaje=completadas|floatformat:0|default:0 %}
+                                <div class="course-progress mb-3">
+                                    <div class="progress-label d-flex justify-content-between mb-1">
+                                        <span>Progreso</span>
+                                        <span>{{ porcentaje }}%</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ porcentaje }}%;" aria-valuenow="{{ porcentaje }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <div class="progress-detail text-center mt-1">
+                                        <small>{{ completadas }} de {{ total_lecciones }} lecciones completadas</small>
+                                    </div>
+                                </div>
+                                {% endwith %}
+                                {% endwith %}
+                                {% endwith %}
+                                
+                                {% if lecciones %}
+                                    <a href="{% url 'appEstudiantes:leccion_detalle' curso.id lecciones.0.id %}" class="btn btn-primary w-100">
+                                        <i class="fas fa-play-circle me-1"></i> Continuar Curso
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                {% if tiene_acceso %}
+                                    <h5 class="card-title">Inscríbete en este curso</h5>
+                                    <p class="card-text">Completa tu inscripción para acceder a todas las lecciones y materiales del curso.</p>
+                                    
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-user-plus me-1"></i> Inscribirme
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <div class="alert alert-warning">
+                                        <h5 class="alert-heading">Plan requerido</h5>
+                                        <p>Este curso requiere un plan {{ curso.nivel_plan.get_nivel_display }} o superior.</p>
+                                        
+                                        {% if user.perfil_estudiante.plan %}
+                                            <p>Tu plan actual es: {{ user.perfil_estudiante.plan.nombre }} ({{ user.perfil_estudiante.plan.get_nivel_display }}).</p>
+                                            <a href="{% url 'appComunidad:planes' %}" class="btn btn-warning w-100">
+                                                <i class="fas fa-arrow-up me-1"></i> Actualizar Plan
+                                            </a>
+                                        {% else %}
+                                            <p>No tienes ningún plan activo.</p>
+                                            <a href="{% url 'appComunidad:planes' %}" class="btn btn-primary w-100">
+                                                <i class="fas fa-shopping-cart me-1"></i> Ver Planes
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Course Details Card -->
+                    <div class="course-details-card card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Detalles del Curso</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-calendar-alt me-2"></i> Fecha de inicio</span>
+                                    <span>{{ curso.fecha_creacion|date:"d M, Y" }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-clock me-2"></i> Duración</span>
+                                    <span>{{ curso.duracion_semanas }} semanas</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-book-open me-2"></i> Lecciones</span>
+                                    <span>{{ lecciones.count }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-graduation-cap me-2"></i> Nivel</span>
+                                    <span class="badge bg-{{ curso.nivel_plan.nivel }}">{{ curso.nivel_plan.get_nivel_display }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-users me-2"></i> Estudiantes</span>
+                                    <span>{{ curso.estudiantes_inscritos.count }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-language me-2"></i> Idioma</span>
+                                    <span>Español</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Share Card -->
+                    <div class="share-card card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Compartir Curso</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">¿Te gusta este curso? ¡Compártelo con tus amigos!</p>
+                            <div class="social-share-buttons">
+                                <a href="#" class="btn btn-outline-primary me-2">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-info me-2">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-success me-2">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <a href="#" class="btn btn-outline-secondary">
+                                    <i class="fas fa-envelope"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonials -->
+                    <div class="testimonials mb-5">
+                        <h4 class="mb-4">Lo que dicen nuestros estudiantes</h4>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="testimonial-card">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Estudiante" class="testimonial-avatar">
+                                        <div>
+                                            <h6 class="mb-0">María González</h6>
+                                            <div class="text-warning">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0">"Este curso transformó mi manera de aprender español. Las lecciones son muy prácticas y fáciles de seguir."</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="testimonial-card">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Estudiante" class="testimonial-avatar">
+                                        <div>
+                                            <h6 class="mb-0">Carlos Martínez</h6>
+                                            <div class="text-warning">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0">"La metodología es excelente. He mejorado mi pronunciación y vocabulario significativamente."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructor Card -->
+                <div class="instructor-card card mb-4 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Sobre el instructor</h5>
+                    </div>
+                    <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        {% if curso.profesor.perfil_profesor.foto %}
+                            <img src="{{ curso.profesor.perfil_profesor.foto.url }}" alt="{{ curso.profesor.get_full_name }}" class="instructor-avatar me-3" width="80">
+                        {% else %}
+                            <div class="instructor-avatar-placeholder me-3" style="width: 80px; height: 80px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #666;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <h6 class="mb-1">{{ curso.profesor.get_full_name }}</h6>
+                            <p class="text-muted mb-1">{{ curso.profesor.perfil_profesor.titulo_academico|default:"Instructor Certificado" }}</p>
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span class="text-muted ms-1">4.8 (128 reseñas)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-0">{{ curso.profesor.perfil_profesor.biografia|default:"Instructor con amplia experiencia en la enseñanza del español como lengua extranjera." }}</p>
+                </div>
+
+                <!-- Course Details -->
+                <div class="course-details-card card mb-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Detalles del curso</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-container bg-light-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-book text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 small text-muted">Lecciones</p>
+                                        <p class="mb-0 fw-medium">{{ lecciones|length }} Lecciones</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-container bg-light-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-clock text-success"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 small text-muted">Duración</p>
+                                        <p class="mb-0 fw-medium">{{ curso.duracion_horas }} horas</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-container bg-light-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-layer-group text-info"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 small text-muted">Nivel</p>
+                                        <p class="mb-0 fw-medium">{{ curso.nivel_plan.get_nivel_display }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-container bg-light-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-language text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 small text-muted">Idioma</p>
+                                        <p class="mb-0 fw-medium">Español</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- CTA Card -->
+                <div class="cta-card bg-primary text-white p-4 rounded-3 text-center mb-4">
+                    <h5 class="mb-3">¿Listo para comenzar?</h5>
+                    <p class="mb-4">Únete a miles de estudiantes que ya están mejorando su español con nosotros.</p>
+                    {% if esta_inscrito %}
+                        <a href="{% url 'appEstudiantes:mis_cursos' %}" class="btn btn-light btn-lg w-100">Continuar Aprendiendo</a>
+                    {% else %}
+                        <a href="#" class="btn btn-light btn-lg w-100">Inscribirse Ahora</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+<!-- Call to Action -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="mb-4">¿Listo para comenzar?</h2>
+                <p class="lead mb-4">Únete a miles de estudiantes que ya están mejorando sus habilidades con nuestros cursos</p>
+                {% if not esta_inscrito %}
+                    <a href="#enroll-form" class="btn btn-primary btn-lg px-5">
+                        Inscríbete ahora <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                {% else %}
+                    <a href="{% if lecciones %}{% url 'appEstudiantes:leccion_detalle' curso.id lecciones.0.id %}{% else %}#{% endif %}" class="btn btn-primary btn-lg px-5">
+                        Continuar curso <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script src="{% static 'js/students.js' %}"></script>
+<script>
+    // Animación del círculo de progreso
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach(bar => {
+            const offset = bar.getAttribute('stroke-dashoffset');
+            bar.style.strokeDashoffset = offset;
+        });
+    });
+</script>
+{% endblock %}

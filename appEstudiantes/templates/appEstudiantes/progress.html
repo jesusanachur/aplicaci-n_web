@@ -1,0 +1,209 @@
+{% load custom_filters %}
+{% block title %}Mi Progreso - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/students.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Mi Progreso</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appEstudiantes:dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Mi Progreso</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Progress Content -->
+<section class="progress-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="dashboard-sidebar">
+                    <div class="user-profile text-center">
+                        {% if user.perfil_estudiante.foto %}
+                            <img src="{{ user.perfil_estudiante.foto.url }}" alt="{{ user.username }}" class="profile-image">
+                        {% else %}
+                            <div class="profile-image-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <h4>{{ user.get_full_name }}</h4>
+                        <p class="text-muted">Estudiante</p>
+                        
+                        {% if user.perfil_estudiante.plan %}
+                            <div class="user-plan {{ user.perfil_estudiante.plan.nivel }}">
+                                {{ user.perfil_estudiante.plan.get_nivel_display }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="dashboard-nav">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appEstudiantes:dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appEstudiantes:mis_cursos' %}">
+                                    <i class="fas fa-book me-2"></i> Mis Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appEstudiantes:cursos' %}">
+                                    <i class="fas fa-graduation-cap me-2"></i> Catálogo de Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'appEstudiantes:progreso' %}">
+                                    <i class="fas fa-chart-line me-2"></i> Mi Progreso
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appEstudiantes:perfil' %}">
+                                    <i class="fas fa-user-edit me-2"></i> Editar Perfil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Progreso en Cursos</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if cursos_progreso %}
+                            <!-- Progress Overview -->
+                            <div class="progress-overview mb-5">
+                                <div class="row">
+                                    <div class="col-lg-8 mx-auto">
+                                        <canvas id="overallProgressChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Course Progress Details -->
+                            <div class="course-progress-details">
+                                {% for curso in cursos_progreso %}
+                                    <div class="course-progress-item card mb-4">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-8">
+                                                    <h5 class="mb-1">{{ curso.curso.titulo }}</h5>
+                                                    <p class="text-muted mb-2">
+                                                        <i class="fas fa-user-tie me-1"></i> {{ curso.curso.profesor.get_full_name }}
+                                                        <span class="ms-3">
+                                                            <i class="fas fa-book-open me-1"></i> {{ curso.total_lecciones }} lecciones
+                                                        </span>
+                                                    </p>
+                                                    
+                                                    <div class="progress-container">
+                                                        <div class="progress-label d-flex justify-content-between mb-1">
+                                                            <span>Progreso</span>
+                                                            <span>{{ curso.porcentaje|floatformat:1 }}%</span>
+                                                        </div>
+                                                        <div class="progress">
+                                                            <div class="progress-bar" role="progressbar" style="width: {{ curso.porcentaje }}%;" aria-valuenow="{{ curso.porcentaje }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                        <div class="progress-info small mt-1">
+                                                            {{ curso.lecciones_completadas }} de {{ curso.total_lecciones }} lecciones completadas
+                                                            
+                                                            {% if curso.completado %}
+                                                                <span class="badge bg-success ms-2">
+                                                                    <i class="fas fa-check-circle me-1"></i> Curso Completado
+                                                                </span>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                                    <a href="{% url 'appEstudiantes:curso_detalle' curso.curso.id %}" class="btn btn-primary">
+                                                        <i class="fas fa-arrow-right me-1"></i> Ver Curso
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-state text-center py-5">
+                                <i class="fas fa-chart-line fa-4x mb-3 text-muted"></i>
+                                <h3>No hay datos de progreso</h3>
+                                <p class="text-muted">Aún no te has inscrito en ningún curso. Inscríbete en cursos para comenzar a ver tu progreso.</p>
+                                <a href="{% url 'appEstudiantes:cursos' %}" class="btn btn-primary mt-3">
+                                    <i class="fas fa-graduation-cap me-1"></i> Ver Cursos Disponibles
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/static/js/students.js"></script>
+<script>
+    // Only initialize chart if there are courses with progress
+    {% if cursos_progreso %}
+    // Overall Progress Chart
+    const ctx = document.getElementById('overallProgressChart').getContext('2d');
+    const overallProgressChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for curso in cursos_progreso %}'{{ curso.curso.titulo|truncatechars:30 }}',{% endfor %}],
+            datasets: [{
+                data: [{% for curso in cursos_progreso %}{{ curso.porcentaje }},{% endfor %}],
+                backgroundColor: [
+                    '#0d6efd',
+                    '#6f42c1',
+                    '#d63384',
+                    '#fd7e14',
+                    '#20c997',
+                    '#0dcaf0',
+                    '#6c757d'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                title: {
+                    display: true,
+                    text: 'Progreso por Curso'
+                }
+            }
+        }
+    });
+    {% endif %}
+</script>
+{% endblock %}

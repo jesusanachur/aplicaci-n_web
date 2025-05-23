@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}ComunidadEducativa - Aprende Español{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/community.css">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="hero-title">Aprende de la mejor manera posible y con los mejores profesores</h1>
+                <p class="hero-subtitle">Una plataforma integral para dominar el idioma español desde cualquier nivel.</p>
+                <div class="hero-buttons">
+                    <a href="{% url 'appComunidad:planes' %}" class="btn btn-primary btn-lg">Ver Planes</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg ms-2">Registrarse</a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="/static/images/hero-image.png" alt="Estudiantes aprendiendo español" class="img-fluid hero-image">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <div class="section-heading text-center mb-5">
+            <h2>¿Por qué elegirnos?</h2>
+            <p class="text-muted">Ventajas de aprender español con ComunidadEducativa</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Profesores Expertos</h3>
+                    <p>Aprende con profesores nativos certificados y con amplia experiencia.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <h3>Contenido Interactivo</h3>
+                    <p>Materiales didácticos de alta calidad y ejercicios interactivos.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Comunidad Activa</h3>
+                    <p>Interactúa con otros estudiantes y practica en un entorno colaborativo.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3>Certificación</h3>
+                    <p>Obtén certificados oficiales que validen tu nivel de español.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Plans Section -->
+<section class="plans-section py-5 bg-light">
+    <div class="container">
+        <div class="section-heading text-center mb-5">
+            <h2>Nuestros Planes</h2>
+            <p class="text-muted">Elige el plan que mejor se adapte a tus necesidades</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            {% for plan in planes %}
+            <div class="col-md-6 col-lg-4">
+                <div class="plan-card {% if plan.nivel == 'intermedio' %}highlighted{% endif %}">
+                    {% if plan.nivel == 'intermedio' %}
+                    <div class="popular-badge">Popular</div>
+                    {% endif %}
+                    <div class="plan-header">
+                        <h3>{{ plan.nombre }}</h3>
+                        <div class="plan-price">
+                            <span class="price">${{ plan.precio }}</span>
+                            <span class="period">/ {{ plan.duracion_meses }} mes(es)</span>
+                        </div>
+                    </div>
+                    <div class="plan-badge {{ plan.nivel }}">
+                        {{ plan.get_nivel_display }}
+                    </div>
+                    <div class="plan-features">
+                        <p>{{ plan.descripcion }}</p>
+                    </div>
+                    <div class="plan-footer">
+                        <a href="{% url 'appComunidad:planes' %}" class="btn btn-outline-primary w-100">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'appComunidad:planes' %}" class="btn btn-primary">Ver Todos los Planes</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5">
+    <div class="container">
+        <div class="section-heading text-center mb-5">
+            <h2>Lo que dicen nuestros estudiantes</h2>
+            <p class="text-muted">Testimonios de miembros de nuestra comunidad</p>
+        </div>
+        <div class="row g-4">
+            {% for testimonio in testimonios %}
+            <div class="col-md-6 col-lg-3">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>{{ testimonio.contenido|truncatewords:20 }}</p>
+                    </div>
+                    <div class="testimonial-user">
+                        {% if testimonio.imagen %}
+                        <img src="{{ testimonio.imagen.url }}" alt="{{ testimonio.nombre }}" class="user-image">
+                        {% else %}
+                        <div class="user-image-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        {% endif %}
+                        <div class="user-info">
+                            <h5>{{ testimonio.nombre }}</h5>
+                            <p>{{ testimonio.rol }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Latest News Section -->
+<section class="news-section py-5 bg-light">
+    <div class="container">
+        <div class="section-heading text-center mb-5">
+            <h2>Últimas Noticias</h2>
+            <p class="text-muted">Mantente al día con las novedades de nuestra comunidad</p>
+        </div>
+        <div class="row g-4">
+            {% for noticia in noticias %}
+            <div class="col-md-4">
+                <div class="news-card">
+                    {% if noticia.imagen %}
+                    <div class="news-image">
+                        <img src="{{ noticia.imagen.url }}" alt="{{ noticia.titulo }}" class="img-fluid">
+                    </div>
+                    {% endif %}
+                    <div class="news-content">
+                        <div class="news-date">{{ noticia.fecha_publicacion|date:"d M, Y" }}</div>
+                        <h3><a href="{% url 'appComunidad:noticia_detalle' noticia.pk %}">{{ noticia.titulo }}</a></h3>
+                        <p>{{ noticia.contenido|truncatewords:20 }}</p>
+                        <a href="{% url 'appComunidad:noticia_detalle' noticia.pk %}" class="read-more">Leer más <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'appComunidad:noticias' %}" class="btn btn-primary">Ver Todas las Noticias</a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="cta-title">¿Listo para comenzar tu viaje con el español?</h2>
+                <p class="cta-subtitle">Únete a nuestra comunidad hoy mismo y comienza a aprender español de manera efectiva y divertida.</p>
+                <div class="cta-buttons">
+                    <a href="{% url 'login' %}" class="btn btn-light btn-lg">Registrarse Ahora</a>
+                    <a href="{% url 'appComunidad:contacto' %}" class="btn btn-outline-light btn-lg ms-2">Contáctanos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/community.js"></script>
+{% endblock %}

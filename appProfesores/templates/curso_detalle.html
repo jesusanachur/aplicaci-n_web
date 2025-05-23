@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ curso.titulo }} - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/profesores.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{ curso.titulo }}</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:cursos' %}">Mis Cursos</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ curso.titulo }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Course Detail Content -->
+<section class="course-detail-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="dashboard-sidebar">
+                    <div class="user-profile text-center">
+                        {% if user.perfil_profesor.foto %}
+                            <img src="{{ user.perfil_profesor.foto.url }}" alt="{{ user.username }}" class="profile-image">
+                        {% else %}
+                            <div class="profile-image-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <h4>{{ user.get_full_name }}</h4>
+                        <p class="text-muted">Profesor</p>
+                    </div>
+                    
+                    <div class="dashboard-nav">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'appProfesores:cursos' %}">
+                                    <i class="fas fa-book me-2"></i> Mis Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:crear_curso' %}">
+                                    <i class="fas fa-plus-circle me-2"></i> Crear Curso
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:perfil' %}">
+                                    <i class="fas fa-user-edit me-2"></i> Editar Perfil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Course Header -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                {% if curso.imagen %}
+                                    <img src="{{ curso.imagen.url }}" alt="{{ curso.titulo }}" class="img-fluid rounded">
+                                {% else %}
+                                    <div style="height: 180px; background-color: #e9ecef; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-book fa-3x text-muted"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <span class="badge bg-{{ curso.nivel_plan.nivel }} mb-2">{{ curso.nivel_plan.get_nivel_display }}</span>
+                                        {% if curso.activo %}
+                                            <span class="badge bg-success ms-2">Activo</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary ms-2">Inactivo</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="courseActions" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="courseActions">
+                                            <li><a class="dropdown-item" href="{% url 'appProfesores:editar_curso' curso.pk %}"><i class="fas fa-edit me-2"></i> Editar curso</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'appProfesores:eliminar_curso' curso.pk %}"><i class="fas fa-trash me-2"></i> Eliminar curso</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="{% url 'appProfesores:estudiantes_curso' curso.pk %}"><i class="fas fa-users me-2"></i> Ver estudiantes</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <h3 class="mb-3">{{ curso.titulo }}</h3>
+                                
+                                <div class="course-stats mb-3">
+                                    <div class="row">
+                                        <div class="col-6 col-md-4">
+                                            <div class="stat-item">
+                                                <i class="fas fa-users me-1"></i> {{ total_estudiantes }} estudiantes
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-4">
+                                            <div class="stat-item">
+                                                <i class="fas fa-book-open me-1"></i> {{ lecciones.count }} lecciones
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-4">
+                                            <div class="stat-item">
+                                                <i class="fas fa-check-circle me-1"></i> {{ estudiantes_completados }} completados
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <p class="course-description">{{ curso.descripcion }}</p>
+                                
+                                <div class="mt-3">
+                                    <a href="{% url 'appProfesores:crear_leccion' curso.pk %}" class="btn btn-primary">
+                                        <i class="fas fa-plus-circle me-1"></i> Añadir Lección
+                                    </a>
+                                    <a href="{% url 'appProfesores:estudiantes_curso' curso.pk %}" class="btn btn-outline-primary ms-2">
+                                        <i class="fas fa-users me-1"></i> Ver Estudiantes
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Lessons Section -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Lecciones del Curso</h5>
+                        <a href="{% url 'appProfesores:crear_leccion' curso.pk %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus-circle me-1"></i> Nueva Lección
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% if lecciones %}
+                            <div class="lessons-list">
+                                {% for leccion in lecciones %}
+                                    <div class="lesson-item">
+                                        <div class="lesson-number">{{ leccion.numero_orden }}</div>
+                                        <div class="lesson-info">
+                                            <h5 class="lesson-title">{{ leccion.titulo }}</h5>
+                                            <div class="d-flex align-items-center">
+                                                <span class="lesson-duration me-3"><i class="far fa-clock me-1"></i> {{ leccion.duracion_minutos }} min</span>
+                                                <span><i class="fas fa-file-alt me-1"></i> {{ leccion.materiales.count }} materiales</span>
+                                            </div>
+                                        </div>
+                                        <div class="lesson-actions">
+                                            <a href="{% url 'appProfesores:editar_leccion' leccion.pk %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'appProfesores:agregar_material' leccion.pk %}" class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-plus"></i> Material
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-book-open fa-4x"></i>
+                                <h3>No hay lecciones todavía</h3>
+                                <p class="text-muted">Comienza a crear lecciones para tu curso.</p>
+                                <a href="{% url 'appProfesores:crear_leccion' curso.pk %}" class="btn btn-primary">
+                                    <i class="fas fa-plus-circle me-1"></i> Crear Primera Lección
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/profesores.js"></script>
+{% endblock %}

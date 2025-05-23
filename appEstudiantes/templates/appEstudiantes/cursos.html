@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% block title %}Catálogo de Cursos - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/students.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Catálogo de Cursos</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appEstudiantes:dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Catálogo de Cursos</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Courses Content -->
+<section class="courses-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="filters-sidebar">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Filtros</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Search Form -->
+                            <form method="get" class="search-form mb-4">
+                                <div class="input-group">
+                                    <input type="text" name="q" class="form-control" placeholder="Buscar cursos..." value="{{ q }}">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Level Filter -->
+                            <div class="filter-group mb-4">
+                                <h6>Nivel</h6>
+                                <div class="list-group">
+                                    <a href="{% url 'appEstudiantes:cursos' %}" class="list-group-item list-group-item-action {% if not nivel %}active{% endif %}">
+                                        Todos los niveles
+                                    </a>
+                                    <a href="{% url 'appEstudiantes:cursos' %}?nivel=principiante{% if q %}&q={{ q }}{% endif %}" class="list-group-item list-group-item-action {% if nivel == 'principiante' %}active{% endif %}">
+                                        Principiante
+                                    </a>
+                                    <a href="{% url 'appEstudiantes:cursos' %}?nivel=intermedio{% if q %}&q={{ q }}{% endif %}" class="list-group-item list-group-item-action {% if nivel == 'intermedio' %}active{% endif %}">
+                                        Intermedio
+                                    </a>
+                                    <a href="{% url 'appEstudiantes:cursos' %}?nivel=avanzado{% if q %}&q={{ q }}{% endif %}" class="list-group-item list-group-item-action {% if nivel == 'avanzado' %}active{% endif %}">
+                                        Avanzado
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- More Filters Placeholder -->
+                            <div class="filter-group">
+                                <h6>Temática</h6>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="grammar">
+                                    <label class="form-check-label" for="grammar">
+                                        Gramática
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="vocabulary">
+                                    <label class="form-check-label" for="vocabulary">
+                                        Vocabulario
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="conversation">
+                                    <label class="form-check-label" for="conversation">
+                                        Conversación
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="reading">
+                                    <label class="form-check-label" for="reading">
+                                        Lectura
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="culture">
+                                    <label class="form-check-label" for="culture">
+                                        Cultura
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Applied Filters -->
+                <div class="applied-filters mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">{{ cursos.paginator.count }} Cursos encontrados</h5>
+                            {% if nivel or q %}
+                                <div class="active-filters mt-2">
+                                    {% if nivel %}
+                                        <span class="badge bg-primary me-2">
+                                            Nivel: {{ nivel|title }}
+                                            <a href="{% url 'appEstudiantes:cursos' %}{% if q %}?q={{ q }}{% endif %}" class="text-white ms-1">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                        </span>
+                                    {% endif %}
+                                    
+                                    {% if q %}
+                                        <span class="badge bg-primary me-2">
+                                            Búsqueda: "{{ q }}"
+                                            <a href="{% url 'appEstudiantes:cursos' %}{% if nivel %}?nivel={{ nivel }}{% endif %}" class="text-white ms-1">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="sort-options">
+                            <select class="form-select form-select-sm">
+                                <option value="newest">Más recientes</option>
+                                <option value="popularity">Popularidad</option>
+                                <option value="rating">Valoración</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Courses Grid -->
+                <div class="courses-grid">
+                    {% if cursos %}
+                        <div class="row g-4">
+                            {% for curso in cursos %}
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="course-card">
+                                        {% if curso.imagen %}
+                                            <div class="course-image">
+                                                <img src="{{ curso.imagen.url }}" alt="{{ curso.titulo }}" class="img-fluid">
+                                                
+                                                {% if curso.id in inscripciones %}
+                                                    <div class="enrolled-badge">
+                                                        <span><i class="fas fa-check-circle me-1"></i> Inscrito</span>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% else %}
+                                            <div class="course-image-placeholder">
+                                                <i class="fas fa-book"></i>
+                                                
+                                                {% if curso.id in inscripciones %}
+                                                    <div class="enrolled-badge">
+                                                        <span><i class="fas fa-check-circle me-1"></i> Inscrito</span>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <div class="course-content">
+                                            <div class="course-level {{ curso.nivel_plan.nivel }}">
+                                                {{ curso.nivel_plan.get_nivel_display }}
+                                            </div>
+                                            
+                                            <h5 class="course-title">{{ curso.titulo }}</h5>
+                                            
+                                            <p class="course-instructor">
+                                                <i class="fas fa-user-tie me-1"></i> {{ curso.profesor.get_full_name }}
+                                            </p>
+                                            
+                                            <div class="course-stats d-flex justify-content-between">
+                                                <span><i class="fas fa-book-open me-1"></i> {{ curso.lecciones.count }} lecciones</span>
+                                                <span><i class="fas fa-users me-1"></i> {{ curso.estudiantes_inscritos.count }} estudiantes</span>
+                                            </div>
+                                            
+                                            <p class="course-description">{{ curso.descripcion|truncatechars:100 }}</p>
+                                            
+                                            <div class="course-action">
+                                                <a href="{% url 'appEstudiantes:curso_detalle' curso.id %}" class="btn btn-primary w-100">
+                                                    {% if curso.id in inscripciones %}
+                                                        <i class="fas fa-eye me-1"></i> Ver Curso
+                                                    {% else %}
+                                                        <i class="fas fa-info-circle me-1"></i> Ver Detalles
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Pagination -->
+                        {% if cursos.has_other_pages %}
+                            <div class="pagination-container mt-5">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        {% if cursos.has_previous %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ cursos.previous_page_number }}{% if nivel %}&nivel={{ nivel }}{% endif %}{% if q %}&q={{ q }}{% endif %}" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        
+                                        {% for i in cursos.paginator.page_range %}
+                                            {% if cursos.number == i %}
+                                                <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                                            {% else %}
+                                                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if nivel %}&nivel={{ nivel }}{% endif %}{% if q %}&q={{ q }}{% endif %}">{{ i }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        
+                                        {% if cursos.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ cursos.next_page_number }}{% if nivel %}&nivel={{ nivel }}{% endif %}{% if q %}&q={{ q }}{% endif %}" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="empty-state text-center py-5">
+                            <i class="fas fa-search fa-4x mb-3 text-muted"></i>
+                            <h3>No se encontraron cursos</h3>
+                            <p class="text-muted">No hay cursos que coincidan con tus criterios de búsqueda.</p>
+                            <a href="{% url 'appEstudiantes:cursos' %}" class="btn btn-primary mt-3">
+                                <i class="fas fa-sync-alt me-1"></i> Reiniciar Filtros
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/students.js"></script>
+{% endblock %}

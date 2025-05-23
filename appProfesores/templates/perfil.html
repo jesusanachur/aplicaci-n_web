@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Perfil - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/profesores.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Mi Perfil</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Profile Content -->
+<section class="profile-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="dashboard-sidebar">
+                    <div class="user-profile text-center">
+                        {% if user.perfil_profesor.foto %}
+                            <img src="{{ user.perfil_profesor.foto.url }}" alt="{{ user.username }}" class="profile-image">
+                        {% else %}
+                            <div class="profile-image-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <h4>{{ user.get_full_name }}</h4>
+                        <p class="text-muted">Profesor</p>
+                    </div>
+                    
+                    <div class="dashboard-nav">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:cursos' %}">
+                                    <i class="fas fa-book me-2"></i> Mis Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:crear_curso' %}">
+                                    <i class="fas fa-plus-circle me-2"></i> Crear Curso
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'appProfesores:perfil' %}">
+                                    <i class="fas fa-user-edit me-2"></i> Editar Perfil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="form-container">
+                    <h3 class="mb-4">Editar Perfil</h3>
+                    
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="profile-image-upload">
+                                    {% if user.perfil_profesor.foto %}
+                                        <img src="{{ user.perfil_profesor.foto.url }}" alt="{{ user.username }}" class="img-preview">
+                                    {% else %}
+                                        <div class="img-preview-placeholder">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="mt-2">
+                                        <label for="{{ form.foto.id_for_label }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-camera me-1"></i> Cambiar Foto
+                                        </label>
+                                        {{ form.foto }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-9">
+                                <div class="profile-info">
+                                    <h4>Información Personal</h4>
+                                    <p class="text-muted">Información básica de usuario</p>
+                                    
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Nombre de Usuario</label>
+                                                <input type="text" class="form-control" value="{{ user.username }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control" value="{{ user.email }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Nombre</label>
+                                                <input type="text" class="form-control" value="{{ user.first_name }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Apellido</label>
+                                                <input type="text" class="form-control" value="{{ user.last_name }}" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.especialidad.id_for_label }}" class="form-label">Especialidad</label>
+                                {{ form.especialidad }}
+                                {% if form.especialidad.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.especialidad.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.anos_experiencia.id_for_label }}" class="form-label">Años de experiencia</label>
+                                {{ form.anos_experiencia }}
+                                {% if form.anos_experiencia.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.anos_experiencia.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-12 mb-3">
+                                <label for="{{ form.titulo_academico.id_for_label }}" class="form-label">Título académico</label>
+                                {{ form.titulo_academico }}
+                                {% if form.titulo_academico.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.titulo_academico.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-12 mb-3">
+                                <label for="{{ form.biografia.id_for_label }}" class="form-label">Biografía</label>
+                                {{ form.biografia }}
+                                {% if form.biografia.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.biografia.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Cuéntales a tus estudiantes sobre tu experiencia, formación y estilo de enseñanza.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-end mt-4">
+                            <a href="{% url 'appProfesores:dashboard' %}" class="btn btn-outline-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/profesores.js"></script>
+{% endblock %}

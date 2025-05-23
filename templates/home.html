@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - ComunidadEducativa{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-4">Aprende español de manera interactiva</h1>
+                <p class="lead mb-4">Únete a nuestra comunidad educativa y mejora tus habilidades en español con profesores certificados y contenido de alta calidad.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-user-plus me-2"></i>Regístrate Gratis
+                    </a>
+                    <a href="#como-funciona" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-play-circle me-2"></i>Cómo Funciona
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="/static/img/hero-image.png" alt="Aprende español" class="img-fluid rounded-3 shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="caracteristicas" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">¿Por qué elegirnos?</h2>
+            <p class="lead text-muted">Ofrecemos la mejor experiencia de aprendizaje de español en línea</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3 mx-auto" style="width: 70px; height: 70px;">
+                            <i class="fas fa-chalkboard-teacher fs-3"></i>
+                        </div>
+                        <h4>Profesores Certificados</h4>
+                        <p class="text-muted">Aprende con profesores nativos y certificados con años de experiencia en la enseñanza del español.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-success bg-opacity-10 text-success rounded-circle p-3 mb-3 mx-auto" style="width: 70px; height: 70px;">
+                            <i class="fas fa-laptop-code fs-3"></i>
+                        </div>
+                        <h4>Plataforma Interactiva</h4>
+                        <p class="text-muted">Accede a lecciones interactivas, ejercicios y evaluaciones desde cualquier dispositivo.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-warning bg-opacity-10 text-warning rounded-circle p-3 mb-3 mx-auto" style="width: 70px; height: 70px;">
+                            <i class="fas fa-users fs-3"></i>
+                        </div>
+                        <h4>Comunidad Activa</h4>
+                        <p class="text-muted">Únete a una comunidad global de estudiantes y practica con hablantes nativos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section id="como-funciona" class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">¿Cómo Funciona?</h2>
+            <p class="lead text-muted">Comienza a aprender en 3 simples pasos</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="step-number bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">1</div>
+                    <h4>Regístrate</h4>
+                    <p class="text-muted">Crea tu cuenta de forma gratuita y selecciona tu nivel de español.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="step-number bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">2</div>
+                    <h4>Elige tu plan</h4>
+                    <p class="text-muted">Selecciona entre nuestros planes flexibles que se adaptan a tus necesidades.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="step-number bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 24px; font-weight: bold;">3</div>
+                    <h4>Comienza a aprender</h4>
+                    <p class="text-muted">Accede a las lecciones, practica con ejercicios y mejora tu español.</p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-5">
+                <i class="fas fa-rocket me-2"></i>Empezar Ahora
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Lo que dicen nuestros estudiantes</h2>
+            <p class="lead text-muted">Miles de estudiantes han mejorado su español con nosotros</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" class="rounded-circle me-3" width="60" height="60" alt="Estudiante">
+                            <div>
+                                <h5 class="mb-0">Ana Martínez</h5>
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted">"He mejorado mucho mi español en solo tres meses. Las clases son muy interactivas y los profesores son excelentes."</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" class="rounded-circle me-3" width="60" height="60" alt="Estudiante">
+                            <div>
+                                <h5 class="mb-0">John Smith</h5>
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted">"La plataforma es muy fácil de usar y me encanta poder practicar con hablantes nativos. ¡Altamente recomendado!"</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" class="rounded-circle me-3" width="60" height="60" alt="Estudiante">
+                            <div>
+                                <h5 class="mb-0">Sophie Martin</h5>
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted">"Los cursos están muy bien estructurados y los ejercicios son muy útiles. He aprendido más aquí que en mi clase presencial."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <h2 class="fw-bold mb-3">¿Listo para comenzar tu viaje de aprendizaje?</h2>
+                <p class="lead mb-0">Únete a miles de estudiantes que ya están mejorando su español con nosotros.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'register' %}" class="btn btn-light btn-lg px-4">
+                    <i class="fas fa-user-plus me-2"></i>Regístrate Gratis
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

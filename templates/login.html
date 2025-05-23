@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Iniciar Sesión - ComunidadEducativa{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <img src="{% static 'img/logo.png' %}" alt="ComunidadEducativa" height="70" class="mb-3">
+                        <h2 class="h3 mb-1">Bienvenido de nuevo</h2>
+                        <p class="text-muted">Inicia sesión para continuar a tu cuenta</p>
+                    </div>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Nombre de usuario o correo electrónico</label>
+                            <input type="text" 
+                                   name="username" 
+                                   class="form-control form-control-lg {% if form.username.errors %}is-invalid{% endif %}" 
+                                   id="id_username" 
+                                   value="{{ form.username.value|default:'' }}" 
+                                   required>
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <label for="id_password" class="form-label">Contraseña</label>
+                                <a href="{% url 'password_reset' %}" class="text-decoration-none small">¿Olvidaste tu contraseña?</a>
+                            </div>
+                            <div class="input-group">
+                                <input type="password" 
+                                       name="password" 
+                                       class="form-control form-control-lg {% if form.password.errors %}is-invalid{% endif %}" 
+                                       id="id_password" 
+                                       required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="id_password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                {% if form.password.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.password.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me">
+                            <label class="form-check-label" for="remember_me">
+                                Recordar mi sesión
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                        </button>
+                        
+                        <div class="text-center mt-4">
+                            <p class="mb-2">¿No tienes una cuenta?</p>
+                            <a href="{% url 'register' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                            </a>
+                        </div>
+                        
+                        <div class="divider my-4">
+                            <span class="px-3 bg-white text-muted">O inicia sesión con</span>
+                        </div>
+                        
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <a href="#" class="btn btn-outline-dark w-100">
+                                    <i class="fab fa-google me-2"></i>Google
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="#" class="btn btn-primary w-100" style="background-color: #1877f2; border-color: #1877f2;">
+                                    <i class="fab fa-facebook-f me-2"></i>Facebook
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="text-muted small">Al registrarte, aceptas nuestros 
+                    <a href="#" class="text-decoration-none">Términos de Servicio</a> y 
+                    <a href="#" class="text-decoration-none">Política de Privacidad</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .divider {
+        position: relative;
+        text-align: center;
+        margin: 20px 0;
+    }
+    .divider:before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: #dee2e6;
+        z-index: -1;
+    }
+    .divider span {
+        position: relative;
+        display: inline-block;
+        padding: 0 10px;
+        background-color: white;
+    }
+    .toggle-password {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+</style>
+
+<script>
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const passwordInput = document.getElementById(targetId);
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+</script>
+{% endblock %}

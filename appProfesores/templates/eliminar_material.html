@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Material - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/profesores.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Eliminar Material</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:cursos' %}">Mis Cursos</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:curso_detalle' material.leccion.curso.pk %}">{{ material.leccion.curso.titulo }}</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:editar_leccion' material.leccion.pk %}">{{ material.leccion.titulo }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Eliminar Material</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Delete Material Content -->
+<section class="delete-material-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="dashboard-sidebar">
+                    <div class="user-profile text-center">
+                        {% if user.perfil_profesor.foto %}
+                            <img src="{{ user.perfil_profesor.foto.url }}" alt="{{ user.username }}" class="profile-image">
+                        {% else %}
+                            <div class="profile-image-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <h4>{{ user.get_full_name }}</h4>
+                        <p class="text-muted">Profesor</p>
+                    </div>
+                    
+                    <div class="dashboard-nav">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'appProfesores:cursos' %}">
+                                    <i class="fas fa-book me-2"></i> Mis Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:crear_curso' %}">
+                                    <i class="fas fa-plus-circle me-2"></i> Crear Curso
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:perfil' %}">
+                                    <i class="fas fa-user-edit me-2"></i> Editar Perfil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <div class="alert alert-danger mb-4">
+                            <h4 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i> Advertencia</h4>
+                            <p>Estás a punto de eliminar el material <strong>{{ material.titulo }}</strong>. Esta acción no se puede deshacer.</p>
+                            <p class="mb-0">El archivo será eliminado permanentemente del sistema.</p>
+                        </div>
+                        
+                        <div class="material-info-box p-4 mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="material-icon me-4">
+                                    <i class="fas {% if material.tipo == 'documento' %}fa-file-alt{% elif material.tipo == 'video' %}fa-video{% elif material.tipo == 'audio' %}fa-headphones{% elif material.tipo == 'presentacion' %}fa-file-powerpoint{% else %}fa-file-alt{% endif %} fa-3x"></i>
+                                </div>
+                                <div class="text-start">
+                                    <h5>{{ material.titulo }}</h5>
+                                    <p class="mb-1"><strong>Tipo:</strong> {{ material.get_tipo_display }}</p>
+                                    <p class="mb-1"><strong>Lección:</strong> {{ material.leccion.titulo }}</p>
+                                    <p class="mb-0"><strong>Fecha de subida:</strong> {{ material.fecha_subida|date:"d/m/Y H:i" }}</p>
+                                    {% if material.descripcion %}
+                                        <p class="mt-2">{{ material.descripcion }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="d-flex justify-content-center gap-3">
+                                <a href="{% url 'appProfesores:editar_leccion' material.leccion.pk %}" class="btn btn-secondary">
+                                    <i class="fas fa-times me-1"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash me-1"></i> Eliminar Material
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/profesores.js"></script>
+{% endblock %}

@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Cursos - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/profesores.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Mis Cursos</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Mis Cursos</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Courses Content -->
+<section class="courses-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="dashboard-sidebar">
+                    <div class="user-profile text-center">
+                        {% if user.perfil_profesor.foto %}
+                            <img src="{{ user.perfil_profesor.foto.url }}" alt="{{ user.username }}" class="profile-image">
+                        {% else %}
+                            <div class="profile-image-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <h4>{{ user.get_full_name }}</h4>
+                        <p class="text-muted">Profesor</p>
+                    </div>
+                    
+                    <div class="dashboard-nav">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'appProfesores:cursos' %}">
+                                    <i class="fas fa-book me-2"></i> Mis Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:crear_curso' %}">
+                                    <i class="fas fa-plus-circle me-2"></i> Crear Curso
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:perfil' %}">
+                                    <i class="fas fa-user-edit me-2"></i> Editar Perfil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Mis Cursos</h5>
+                        <a href="{% url 'appProfesores:crear_curso' %}" class="btn btn-primary">
+                            <i class="fas fa-plus-circle me-1"></i> Nuevo Curso
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <div class="input-group">
+                                <input type="text" id="course-search" class="form-control" placeholder="Buscar cursos...">
+                                <button class="btn btn-outline-primary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        {% if cursos %}
+                            <div class="row">
+                                {% for curso in cursos %}
+                                    <div class="col-md-6 col-xl-4 mb-4">
+                                        <div class="course-card">
+                                            {% if curso.imagen %}
+                                                <div class="course-image">
+                                                    <img src="{{ curso.imagen.url }}" alt="{{ curso.titulo }}">
+                                                </div>
+                                            {% else %}
+                                                <div class="course-image-placeholder">
+                                                    <i class="fas fa-book"></i>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            <div class="course-content">
+                                                <div class="course-level {{ curso.nivel_plan.nivel }}">
+                                                    {{ curso.nivel_plan.get_nivel_display }}
+                                                </div>
+                                                
+                                                <h5 class="course-title">{{ curso.titulo }}</h5>
+                                                
+                                                <div class="course-stats">
+                                                    <span><i class="fas fa-book-open me-1"></i> {{ curso.lecciones.count }}</span>
+                                                    <span><i class="fas fa-users me-1"></i> {{ curso.estudiantes_inscritos.count }}</span>
+                                                </div>
+                                                
+                                                <p class="course-description">{{ curso.descripcion|truncatechars:100 }}</p>
+                                                
+                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input active-toggle" type="checkbox" id="active-{{ curso.id }}" data-course-id="{{ curso.id }}" {% if curso.activo %}checked{% endif %}>
+                                                        <label class="form-check-label" for="active-{{ curso.id }}">
+                                                            <span class="status-badge badge {% if curso.activo %}bg-success{% else %}bg-secondary{% endif %}" data-course-id="{{ curso.id }}">
+                                                                {% if curso.activo %}Activo{% else %}Inactivo{% endif %}
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                    
+                                                    <span class="text-muted small">{{ curso.fecha_creacion|date:"d/m/Y" }}</span>
+                                                </div>
+                                                
+                                                <div class="d-flex gap-2">
+                                                    <a href="{% url 'appProfesores:curso_detalle' curso.pk %}" class="btn btn-primary flex-grow-1">
+                                                        <i class="fas fa-eye me-1"></i> Ver
+                                                    </a>
+                                                    <a href="{% url 'appProfesores:editar_curso' curso.pk %}" class="btn btn-outline-primary">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="{% url 'appProfesores:eliminar_curso' curso.pk %}" class="btn btn-outline-danger">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-book fa-4x"></i>
+                                <h3>No tienes cursos todavía</h3>
+                                <p class="text-muted">Comienza creando tu primer curso para compartir tu conocimiento con estudiantes.</p>
+                                <a href="{% url 'appProfesores:crear_curso' %}" class="btn btn-primary">
+                                    <i class="fas fa-plus-circle me-1"></i> Crear Primer Curso
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/profesores.js"></script>
+{% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejar cambios en los toggles de cursos activos
+    document.querySelectorAll('.active-toggle').forEach(function(toggle) {
+        toggle.addEventListener('change', function() {
+            const courseId = this.dataset.courseId;
+            const active = this.checked;
+            const statusBadge = document.querySelector(`.status-badge[data-course-id="${courseId}"]`);
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            fetch(`{% url 'appProfesores:toggle_curso_activo' 0 %}`.replace('0', courseId), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({active: active})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (active) {
+                        statusBadge.textContent = 'Activo';
+                        statusBadge.classList.remove('bg-secondary');
+                        statusBadge.classList.add('bg-success');
+                    } else {
+                        statusBadge.textContent = 'Inactivo';
+                        statusBadge.classList.remove('bg-success');
+                        statusBadge.classList.add('bg-secondary');
+                    }
+                }
+            });
+        });
+    });
+});
+</script>

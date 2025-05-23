@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+{% block title %}Acerca de Nosotros - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/community.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Acerca de Nosotros</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Acerca de Nosotros</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="/static/images/about-image.jpg" alt="ComunidadEducativa" class="img-fluid rounded">
+            </div>
+            <div class="col-lg-6">
+                <div class="section-heading">
+                    <h2>Nuestra Historia</h2>
+                    <p class="text-muted">Cómo comenzó ComunidadEducativa</p>
+                </div>
+                <p>ComunidadEducativa nació en 2020 con la misión de hacer accesible el aprendizaje del español a estudiantes de todo el mundo. Fundada por un grupo de profesores apasionados y expertos en lingüística, nuestra plataforma ha evolucionado para convertirse en un referente en la enseñanza de español online.</p>
+                <p>Creemos firmemente que el aprendizaje de idiomas debe ser una experiencia enriquecedora, práctica y adaptada a las necesidades de cada estudiante. Por eso, hemos desarrollado una metodología única que combina la teoría con la práctica, facilitando la inmersión lingüística y cultural.</p>
+                <p>Hoy, contamos con una comunidad de más de 10,000 estudiantes y 50 profesores certificados de diferentes países hispanohablantes, todos comprometidos con la excelencia educativa y la difusión de la riqueza del idioma español.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision Section -->
+<section class="mission-vision-section py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="card h-100">
+                    <div class="card-body p-4">
+                        <div class="card-icon mb-3">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3>Nuestra Misión</h3>
+                        <p>Proporcionar una educación de calidad en español, accesible para todos, que no solo enseñe el idioma, sino que también conecte a los estudiantes con la rica cultura de los países hispanohablantes, facilitando su desarrollo personal y profesional.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body p-4">
+                        <div class="card-icon mb-3">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Nuestra Visión</h3>
+                        <p>Ser reconocidos globalmente como la plataforma líder en la enseñanza del español, innovando constantemente en metodologías educativas y tecnología para ofrecer la mejor experiencia de aprendizaje, mientras construimos una comunidad global de hablantes de español confiados y competentes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="values-section py-5">
+    <div class="container">
+        <div class="section-heading text-center mb-5">
+            <h2>Nuestros Valores</h2>
+            <p class="text-muted">Los principios que guían nuestro trabajo</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card text-center">
+                    <div class="value-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>Excelencia</h3>
+                    <p>Nos esforzamos por ofrecer la mejor calidad en todos nuestros cursos y materiales.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card text-center">
+                    <div class="value-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Pasión</h3>
+                    <p>Amamos lo que hacemos y transmitimos ese entusiasmo a nuestros estudiantes.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card text-center">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Comunidad</h3>
+                    <p>Creemos en el poder de aprender juntos y apoyarse mutuamente.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="value-card text-center">
+                    <div class="value-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Innovación</h3>
+                    <p>Constantemente buscamos nuevas formas de mejorar la experiencia de aprendizaje.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="team-section py-5 bg-light">
+    <div class="container">
+        <div class="section-heading text-center mb-5">
+            <h2>Nuestro Equipo</h2>
+            <p class="text-muted">Las personas detrás de ComunidadEducativa</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/static/images/team/director.jpg" alt="Director Académico" class="img-fluid">
+                    </div>
+                    <div class="team-info">
+                        <h3>Carlos Rodríguez</h3>
+                        <p class="position">Director Académico</p>
+                        <p class="bio">Doctor en Lingüística con más de 15 años de experiencia en la enseñanza del español.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/static/images/team/coordinadora.jpg" alt="Coordinadora de Profesores" class="img-fluid">
+                    </div>
+                    <div class="team-info">
+                        <h3>Laura Martínez</h3>
+                        <p class="position">Coordinadora de Profesores</p>
+                        <p class="bio">Especialista en metodologías de enseñanza de segundas lenguas y formación de profesores.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/static/images/team/tecnologia.jpg" alt="Director de Tecnología" class="img-fluid">
+                    </div>
+                    <div class="team-info">
+                        <h3>Alejandro Gómez</h3>
+                        <p class="position">Director de Tecnología</p>
+                        <p class="bio">Ingeniero informático especializado en plataformas educativas y experiencia de usuario.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="/static/images/team/contenido.jpg" alt="Creadora de Contenido" class="img-fluid">
+                    </div>
+                    <div class="team-info">
+                        <h3>María Sánchez</h3>
+                        <p class="position">Creadora de Contenido</p>
+                        <p class="bio">Experta en diseño de materiales didácticos y contenidos interactivos para el aprendizaje.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="cta-title">¿Quieres ser parte de nuestra comunidad?</h2>
+                <p class="cta-subtitle">Únete a miles de estudiantes que ya están aprendiendo español con nosotros. Ofrecemos planes flexibles para todos los niveles.</p>
+                <div class="cta-buttons">
+                    <a href="{% url 'login' %}" class="btn btn-light btn-lg">Registrarse Ahora</a>
+                    <a href="{% url 'appComunidad:contacto' %}" class="btn btn-outline-light btn-lg ms-2">Contáctanos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/community.js"></script>
+{% endblock %}

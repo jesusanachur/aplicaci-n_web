@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Curso - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/profesores.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Eliminar Curso</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:cursos' %}">Mis Cursos</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Eliminar Curso</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Delete Course Content -->
+<section class="delete-course-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="dashboard-sidebar">
+                    <div class="user-profile text-center">
+                        {% if user.perfil_profesor.foto %}
+                            <img src="{{ user.perfil_profesor.foto.url }}" alt="{{ user.username }}" class="profile-image">
+                        {% else %}
+                            <div class="profile-image-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <h4>{{ user.get_full_name }}</h4>
+                        <p class="text-muted">Profesor</p>
+                    </div>
+                    
+                    <div class="dashboard-nav">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:cursos' %}">
+                                    <i class="fas fa-book me-2"></i> Mis Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:crear_curso' %}">
+                                    <i class="fas fa-plus-circle me-2"></i> Crear Curso
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:perfil' %}">
+                                    <i class="fas fa-user-edit me-2"></i> Editar Perfil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <div class="alert alert-danger mb-4">
+                            <h4 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i> Advertencia</h4>
+                            <p>Estás a punto de eliminar el curso <strong>{{ object.titulo }}</strong>. Esta acción no se puede deshacer.</p>
+                            <p class="mb-0">Todos los datos asociados a este curso, incluyendo lecciones, materiales y el progreso de los estudiantes serán eliminados permanentemente.</p>
+                        </div>
+                        
+                        <div class="course-info-box p-4 mb-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-3 mb-3 mb-md-0">
+                                    {% if object.imagen %}
+                                        <img src="{{ object.imagen.url }}" alt="{{ object.titulo }}" class="img-fluid rounded">
+                                    {% else %}
+                                        <div style="height: 120px; background-color: #e9ecef; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-book fa-3x text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-9 text-md-start">
+                                    <h5>{{ object.titulo }}</h5>
+                                    <p class="text-muted mb-2">{{ object.descripcion|truncatechars:120 }}</p>
+                                    <div class="course-details">
+                                        <span class="badge rounded-pill bg-{{ object.nivel_plan.nivel }} me-2">{{ object.nivel_plan.get_nivel_display }}</span>
+                                        <span class="me-3"><i class="fas fa-users me-1"></i> {{ object.estudiantes_inscritos.count }} estudiantes</span>
+                                        <span><i class="fas fa-book-open me-1"></i> {{ object.lecciones.count }} lecciones</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form method="post">
+                            {% csrf_token %}
+                            <p>Por favor, escribe <strong>ELIMINAR</strong> para confirmar:</p>
+                            <div class="row justify-content-center mb-4">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="confirm-delete" placeholder="ELIMINAR" required>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-center gap-3">
+                                <a href="{% url 'appProfesores:curso_detalle' object.pk %}" class="btn btn-secondary">
+                                    <i class="fas fa-times me-1"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-danger" id="delete-button" disabled>
+                                    <i class="fas fa-trash me-1"></i> Eliminar Curso
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/profesores.js"></script>
+<script>
+    // Habilitar el botón de eliminación solo cuando se escribe correctamente "ELIMINAR"
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmDeleteInput = document.getElementById('confirm-delete');
+        const deleteButton = document.getElementById('delete-button');
+        
+        if (confirmDeleteInput && deleteButton) {
+            confirmDeleteInput.addEventListener('input', function() {
+                deleteButton.disabled = this.value !== 'ELIMINAR';
+            });
+        }
+    });
+</script>
+{% endblock %}

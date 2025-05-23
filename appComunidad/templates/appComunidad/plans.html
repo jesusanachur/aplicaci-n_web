@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+
+{% block title %}Planes de Estudio - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/community.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Nuestros Planes</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Planes</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Plans Section -->
+<section class="plans-section py-5">
+    <div class="container">
+        <div class="section-heading text-center mb-5">
+            <h2>Planes de Estudio</h2>
+            <p class="text-muted">Elige el plan que mejor se adapte a tus necesidades y objetivos</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for plan in planes %}
+            <div class="col-md-6 col-lg-4">
+                <div class="plan-card {% if plan.nivel == 'intermedio' %}highlighted{% endif %}">
+                    {% if plan.nivel == 'intermedio' %}
+                    <div class="popular-badge">Popular</div>
+                    {% endif %}
+                    <div class="plan-header">
+                        <h3>{{ plan.nombre }}</h3>
+                        <div class="plan-price">
+                            <span class="price">${{ plan.precio }}</span>
+                            <span class="period">/ {{ plan.duracion_meses }} mes(es)</span>
+                        </div>
+                    </div>
+                    <div class="plan-badge {{ plan.nivel }}">
+                        {{ plan.get_nivel_display }}
+                    </div>
+                    <div class="plan-features">
+                        <p>{{ plan.descripcion }}</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check me-2 text-success"></i> Acceso a lecciones</li>
+                            <li><i class="fas fa-check me-2 text-success"></i> Materiales descargables</li>
+                            <li><i class="fas fa-check me-2 text-success"></i> Ejercicios interactivos</li>
+                            {% if plan.nivel != 'principiante' %}
+                            <li><i class="fas fa-check me-2 text-success"></i> Foros de discusión</li>
+                            {% else %}
+                            <li><i class="fas fa-times me-2 text-danger"></i> Foros de discusión</li>
+                            {% endif %}
+                            <li><i class="fas fa-check me-2 text-success"></i> 
+                                {% if plan.nivel == 'principiante' %}1 clase en grupo
+                                {% elif plan.nivel == 'intermedio' %}2 clases en grupo
+                                {% else %}4 clases en grupo
+                                {% endif %}
+                            </li>
+                            <li>
+                                {% if plan.nivel == 'principiante' %}
+                                <i class="fas fa-times me-2 text-danger"></i> Clases particulares
+                                {% elif plan.nivel == 'intermedio' %}
+                                <i class="fas fa-check me-2 text-success"></i> 1 clase particular
+                                {% else %}
+                                <i class="fas fa-check me-2 text-success"></i> 2 clases particulares
+                                {% endif %}
+                            </li>
+                            {% if plan.nivel != 'principiante' %}
+                            <li><i class="fas fa-check me-2 text-success"></i> Corrección de escritura</li>
+                            {% else %}
+                            <li><i class="fas fa-times me-2 text-danger"></i> Corrección de escritura</li>
+                            {% endif %}
+                            {% if plan.nivel == 'avanzado' %}
+                            <li><i class="fas fa-check me-2 text-success"></i> Materiales avanzados</li>
+                            {% else %}
+                            <li><i class="fas fa-times me-2 text-danger"></i> Materiales avanzados</li>
+                            {% endif %}
+                            {% if plan.nivel != 'principiante' %}
+                            <li><i class="fas fa-check me-2 text-success"></i> Certificación</li>
+                            {% else %}
+                            <li><i class="fas fa-times me-2 text-danger"></i> Certificación</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="plan-footer">
+                        <a href="{% url 'login' %}" class="btn btn-primary w-100">Elegir Plan</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Compare Plans Section -->
+<section class="compare-plans-section py-5 bg-light">
+    <div class="container">
+        <div class="section-heading text-center mb-5">
+            <h2>Comparativa de Planes</h2>
+            <p class="text-muted">Compara las características de cada plan para tomar la mejor decisión</p>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered comparison-table">
+                <thead>
+                    <tr>
+                        <th>Características</th>
+                        <th>Plan Básico</th>
+                        <th class="highlight">Plan Estándar</th>
+                        <th>Plan Premium</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Acceso a lecciones</td>
+                        <td><i class="fas fa-check text-success"></i></td>
+                        <td class="highlight"><i class="fas fa-check text-success"></i></td>
+                        <td><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Materiales descargables</td>
+                        <td><i class="fas fa-check text-success"></i></td>
+                        <td class="highlight"><i class="fas fa-check text-success"></i></td>
+                        <td><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Ejercicios interactivos</td>
+                        <td><i class="fas fa-check text-success"></i></td>
+                        <td class="highlight"><i class="fas fa-check text-success"></i></td>
+                        <td><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Foros de discusión</td>
+                        <td><i class="fas fa-times text-danger"></i></td>
+                        <td class="highlight"><i class="fas fa-check text-success"></i></td>
+                        <td><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Clases en grupo (mensual)</td>
+                        <td>1</td>
+                        <td class="highlight">2</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>Clases particulares (mensual)</td>
+                        <td><i class="fas fa-times text-danger"></i></td>
+                        <td class="highlight">1</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>Corrección de escritura</td>
+                        <td><i class="fas fa-times text-danger"></i></td>
+                        <td class="highlight"><i class="fas fa-check text-success"></i></td>
+                        <td><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Materiales avanzados</td>
+                        <td><i class="fas fa-times text-danger"></i></td>
+                        <td class="highlight"><i class="fas fa-times text-danger"></i></td>
+                        <td><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Certificación</td>
+                        <td><i class="fas fa-times text-danger"></i></td>
+                        <td class="highlight"><i class="fas fa-check text-success"></i></td>
+                        <td><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section py-5">
+    <div class="container">
+        <div class="section-heading text-center mb-5">
+            <h2>Preguntas Frecuentes</h2>
+            <p class="text-muted">Respuestas a las dudas más comunes sobre nuestros planes</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                ¿Cómo sé qué nivel es adecuado para mí?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Ofrecemos una prueba de nivel gratuita que te ayudará a determinar tu nivel actual de español. Basándonos en los resultados, te recomendaremos el plan más adecuado para ti. También puedes cambiar de plan si descubres que necesitas un nivel diferente.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                ¿Puedo cambiar de plan una vez inscrito?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Sí, puedes cambiar de plan en cualquier momento. Si cambias a un plan de nivel superior, solo pagarás la diferencia proporcional al tiempo restante de tu suscripción actual. Si cambias a un plan inferior, se te acreditará la diferencia para futuros pagos.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                ¿Las clases son en vivo o grabadas?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Ofrecemos ambas opciones. Las lecciones básicas están disponibles como contenido grabado que puedes ver a tu propio ritmo. Las clases en grupo y particulares son sesiones en vivo con nuestros profesores, programadas según la disponibilidad.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                ¿Qué incluye la certificación?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Nuestra certificación incluye una evaluación completa de tus habilidades en español (comprensión oral y escrita, expresión oral y escrita) y un certificado digital que acredita tu nivel según el Marco Común Europeo de Referencia para las Lenguas (MCER). Este certificado es reconocido por muchas instituciones educativas y empresas.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                ¿Cuánto tiempo necesito dedicar cada semana?
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Recomendamos un mínimo de 3-5 horas semanales para un progreso constante. Sin embargo, nuestro sistema es flexible y puedes ajustar tu dedicación según tu disponibilidad. Lo importante es la constancia más que la cantidad de horas.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="cta-title">¿Listo para comenzar a aprender español?</h2>
+                <p class="cta-subtitle">Elige tu plan y únete a miles de estudiantes que ya están mejorando su español con nosotros.</p>
+                <div class="cta-buttons">
+                    <a href="{% url 'login' %}" class="btn btn-primary w-100">Elegir Plan</a>
+                    <a href="{% url 'appComunidad:contacto' %}" class="btn btn-outline-light btn-lg ms-2">¿Tienes preguntas?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/community.js"></script>
+{% endblock %}

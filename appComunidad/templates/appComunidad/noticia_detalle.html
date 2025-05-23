@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ noticia.titulo }} - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/community.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>{{ noticia.titulo }}</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:noticias' %}">Noticias</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ noticia.titulo }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- News Detail Section -->
+<section class="news-detail-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="news-detail-content">
+                    <div class="news-meta">
+                        <span class="date"><i class="far fa-calendar-alt me-2"></i>{{ noticia.fecha_publicacion|date:"d M, Y" }}</span>
+                    </div>
+                    
+                    {% if noticia.imagen %}
+                    <div class="news-image mb-4">
+                        <img src="{{ noticia.imagen.url }}" alt="{{ noticia.titulo }}" class="img-fluid rounded">
+                    </div>
+                    {% endif %}
+                    
+                    <div class="news-text">
+                        {{ noticia.contenido|safe|linebreaks }}
+                    </div>
+                    
+                    <!-- Share Buttons -->
+                    <div class="share-buttons mt-5">
+                        <span class="me-3">Compartir:</span>
+                        <a href="#" class="share-btn facebook" target="_blank">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="share-btn twitter" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="share-btn linkedin" target="_blank">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="share-btn whatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <!-- Recent Posts Widget -->
+                    <div class="widget recent-posts-widget">
+                        <div class="widget-title">
+                            <h3>Noticias Recientes</h3>
+                        </div>
+                        <div class="widget-body">
+                            {% for post in noticias_recientes %}
+                            <div class="recent-post">
+                                {% if post.imagen %}
+                                <div class="post-thumb">
+                                    <a href="{% url 'appComunidad:noticia_detalle' post.pk %}">
+                                        <img src="{{ post.imagen.url }}" alt="{{ post.titulo }}" class="img-fluid">
+                                    </a>
+                                </div>
+                                {% endif %}
+                                <div class="post-info">
+                                    <h5><a href="{% url 'appComunidad:noticia_detalle' post.pk %}">{{ post.titulo }}</a></h5>
+                                    <span class="date">{{ post.fecha_publicacion|date:"d M, Y" }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Newsletter Widget -->
+                    <div class="widget newsletter-widget">
+                        <div class="widget-title">
+                            <h3>Suscríbete</h3>
+                        </div>
+                        <div class="widget-body">
+                            <p>Recibe nuestras últimas noticias y actualizaciones directamente en tu correo.</p>
+                            <form>
+                                <div class="mb-3">
+                                    <input type="email" class="form-control" placeholder="Tu email" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Suscribirse</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/community.js"></script>
+{% endblock %}

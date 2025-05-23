@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}Estudiantes del Curso - ComunidadEducativa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/profesores.css">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Estudiantes del Curso</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'appComunidad:index' %}">Inicio</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:cursos' %}">Mis Cursos</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'appProfesores:curso_detalle' curso.pk %}">{{ curso.titulo }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Estudiantes</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Students List Content -->
+<section class="students-list-section py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 mb-4 mb-lg-0">
+                <div class="dashboard-sidebar">
+                    <div class="user-profile text-center">
+                        {% if user.perfil_profesor.foto %}
+                            <img src="{{ user.perfil_profesor.foto.url }}" alt="{{ user.username }}" class="profile-image">
+                        {% else %}
+                            <div class="profile-image-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <h4>{{ user.get_full_name }}</h4>
+                        <p class="text-muted">Profesor</p>
+                    </div>
+                    
+                    <div class="dashboard-nav">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'appProfesores:cursos' %}">
+                                    <i class="fas fa-book me-2"></i> Mis Cursos
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:crear_curso' %}">
+                                    <i class="fas fa-plus-circle me-2"></i> Crear Curso
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'appProfesores:perfil' %}">
+                                    <i class="fas fa-user-edit me-2"></i> Editar Perfil
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="mb-3">Estudiantes del Curso: {{ curso.titulo }}</h4>
+                        
+                        <div class="course-summary mb-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Total de estudiantes:</span>
+                                        <span class="stat-value">{{ estudiantes_info|length }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Han completado el curso:</span>
+                                        <span class="stat-value">{% load custom_filters %}{{ estudiantes_info|select_attr:"completado"|length }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-item">
+                                        <span class="stat-label">Lecciones en el curso:</span>
+                                        <span class="stat-value">{{ estudiantes_info.0.total_lecciones }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Search bar -->
+                        <div class="mb-4">
+                            <div class="input-group">
+                                <input type="text" id="student-search" class="form-control" placeholder="Buscar estudiantes...">
+                                <button class="btn btn-outline-primary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        {% if estudiantes_info %}
+                            <div class="students-list">
+                                {% for info in estudiantes_info %}
+                                    <div class="student-item">
+                                        <div class="student-avatar">
+                                            {% if info.estudiante.perfil_estudiante.foto %}
+                                                <img src="{{ info.estudiante.perfil_estudiante.foto.url }}" alt="{{ info.estudiante.username }}" class="student-avatar">
+                                            {% else %}
+                                                <div class="student-avatar-placeholder">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="student-info">
+                                            <h5 class="student-name">{{ info.estudiante.get_full_name|default:info.estudiante.username }}</h5>
+                                            <p class="student-email">{{ info.estudiante.email }}</p>
+                                            <div class="student-details">
+                                                <span class="me-3"><i class="fas fa-calendar-alt me-1"></i> Inscrito el {{ info.fecha_inscripcion|date:"d/m/Y" }}</span>
+                                                {% if info.estudiante.perfil_estudiante.idioma_nativo %}
+                                                    <span><i class="fas fa-language me-1"></i> {{ info.estudiante.perfil_estudiante.idioma_nativo }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="student-progress">
+                                            <div class="progress-label d-flex justify-content-between mb-1">
+                                                <span>Progreso</span>
+                                                <span>{{ info.porcentaje|floatformat:0 }}%</span>
+                                            </div>
+                                            <div class="progress mb-2">
+                                                <div class="progress-bar" role="progressbar" style="width: {{ info.porcentaje }}%;" aria-valuenow="{{ info.porcentaje }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <div class="progress-detail">
+                                                <small>{{ info.lecciones_completadas }} de {{ info.total_lecciones }} lecciones</small>
+                                                {% if info.completado %}
+                                                    <span class="badge bg-success ms-2">Completado</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-users fa-4x"></i>
+                                <h3>No hay estudiantes inscritos</h3>
+                                <p class="text-muted">Todavía no hay estudiantes inscritos en este curso.</p>
+                                <a href="{% url 'appProfesores:curso_detalle' curso.pk %}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-left me-1"></i> Volver al Curso
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Export Options -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Exportar Datos</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Exporta los datos de los estudiantes y su progreso en diferentes formatos.</p>
+                        <div class="d-flex gap-2">
+                            <a href="#" class="btn btn-outline-primary">
+                                <i class="fas fa-file-csv me-1"></i> Exportar CSV
+                            </a>
+                            <a href="#" class="btn btn-outline-primary">
+                                <i class="fas fa-file-excel me-1"></i> Exportar Excel
+                            </a>
+                            <a href="#" class="btn btn-outline-primary">
+                                <i class="fas fa-print me-1"></i> Imprimir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/profesores.js"></script>
+<script>
+    // Filtrar estudiantes
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('student-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                document.querySelectorAll('.student-item').forEach(item => {
+                    const studentName = item.querySelector('.student-name').textContent.toLowerCase();
+                    const studentEmail = item.querySelector('.student-email').textContent.toLowerCase();
+                    
+                    if (studentName.includes(searchTerm) || studentEmail.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}
