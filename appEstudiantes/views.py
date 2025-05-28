@@ -26,7 +26,7 @@ from django.views.generic import ListView
 from appProfesores.models import Curso, Leccion, Material
 
 from .forms import ComentarioForm, NotaPersonalForm, PerfilEstudianteForm
-from .models import Comentario, Inscripcion, MaterialDescargado, ProgresoLeccion
+from .models import Comentario, Inscripcion, MaterialDescargado, PerfilEstudiante, ProgresoLeccion
 
 # Type variables for generic types
 T = TypeVar("T")
@@ -83,6 +83,7 @@ def perfil(request: HttpRequest) -> HttpResponse:
     Vista para ver y editar el perfil del estudiante.
 
     Permite al estudiante ver y actualizar su información de perfil.
+    Si el perfil no existe, se crea uno nuevo automáticamente.
 
     Args:
         request: La solicitud HTTP.
@@ -90,14 +91,14 @@ def perfil(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse: Renderiza la plantilla de perfil con el formulario.
 
-    Raises:
-        Http404: Si el perfil del estudiante no existe.
-
     """
     # Obtener o crear el perfil del estudiante
-    perfil_estudiante = get_object_or_404(
-        request.user.perfil_estudiante,
-        defaults={"user": request.user},
+    perfil_estudiante, created = PerfilEstudiante.objects.get_or_create(
+        usuario=request.user,
+        defaults={
+            "biografia": "",
+            "idioma_nativo": "",
+        },
     )
 
     if request.method == "POST":
@@ -108,7 +109,7 @@ def perfil(request: HttpRequest) -> HttpResponse:
         )
         if form.is_valid():
             perfil_actualizado = form.save(commit=False)
-            perfil_actualizado.user = request.user
+            perfil_actualizado.usuario = request.user
             perfil_actualizado.save()
             messages.success(
                 request,
@@ -125,7 +126,7 @@ def perfil(request: HttpRequest) -> HttpResponse:
 
     return render(
         request,
-        "appEstudiantes/perfil.html",
+        "appEstudiantes/profile.html",
         context,
     )
 
@@ -213,8 +214,7 @@ def curso_detalle(request: HttpRequest, pk: int) -> HttpResponse:
     # Obtener información adicional del curso
     lecciones: QuerySet[Leccion] = Leccion.objects.filter(
         curso=curso,
-        activa=True,
-    ).order_by("orden")
+    ).order_by("numero_orden")
 
     # Manejar la inscripción al curso
     if request.method == "POST" and "inscribirse" in request.POST:
@@ -307,12 +307,21 @@ def leccion_detalle(
         activo=True,
     ).order_by("orden")
 
-    # Obtener información de progreso
+    # Obtener información de progreso de la lección actual
     progreso, _ = ProgresoLeccion.objects.get_or_create(
         estudiante=request.user,
         leccion=leccion,
         defaults={"completado": False},
     )
+    
+    # Obtener el progreso de todas las lecciones del curso para el usuario actual
+    progreso_lecciones = {
+        pl.leccion_id: pl
+        for pl in ProgresoLeccion.objects.filter(
+            estudiante=request.user,
+            leccion__in=lecciones,
+        )
+    }
 
     # Manejar el envío del formulario de notas personales
     if request.method == "POST" and "guardar_notas" in request.POST:
@@ -345,6 +354,7 @@ def leccion_detalle(
         "form": form,
         "leccion_anterior": leccion_anterior,
         "leccion_siguiente": leccion_siguiente,
+        "progreso_lecciones": progreso_lecciones,
     }
 
     return render(request, "appEstudiantes/leccion_detalle.html", context)

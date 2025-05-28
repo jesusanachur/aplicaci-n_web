@@ -341,7 +341,7 @@
                                 
                                 {% with total_lecciones=lecciones.count %}
                                 {% with completadas=user.progreso_lecciones.filter(leccion__curso=curso, completado=True).count %}
-                                {% with porcentaje=completadas|floatformat:0|default:0 %}
+                                {% with porcentaje=completadas|default:0|floatformat:0 %}
                                 <div class="course-progress mb-3">
                                     <div class="progress-label d-flex justify-content-between mb-1">
                                         <span>Progreso</span>

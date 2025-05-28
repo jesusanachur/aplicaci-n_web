@@ -176,8 +176,8 @@
                                             <span class="lesson-number me-2">{{ leccion_item.numero_orden }}.</span>
                                             {{ leccion_item.titulo }}
                                         </div>
-                                        {% with progreso_item=user.progreso_lecciones.filter.leccion=leccion_item.first %}
-                                            {% if progreso_item.completado %}
+                                        {% with progreso_item=progreso_lecciones|get_item:leccion_item.id %}
+                                            {% if progreso_item and progreso_item.completado %}
                                                 <span class="badge bg-success rounded-pill">
                                                     <i class="fas fa-check"></i>
                                                 </span>
