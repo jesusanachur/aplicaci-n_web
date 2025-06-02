@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Página no encontrada - ComunidadEducativa{% endblock %}
 
@@ -15,36 +16,36 @@
     .error-container {
         text-align: center;
         position: relative;
-        padding: 2rem;
+        padding: 3rem 2rem;
         border-radius: 15px;
         background: white;
         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        max-width: 800px;
+        max-width: 600px;
         margin: 0 auto;
     }
     
     .error-code {
-        font-size: 8rem;
+        font-size: 6rem;
         font-weight: 900;
-        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 1rem;
+        color: #4e54c8;
+        margin: 0;
         line-height: 1;
+        position: relative;
+        z-index: 1;
     }
     
     .error-title {
-        font-size: 2.5rem;
+        font-size: 2rem;
         color: #343a40;
-        margin-bottom: 1.5rem;
+        margin: 1rem 0;
         font-weight: 700;
     }
     
     .error-message {
-        font-size: 1.25rem;
+        font-size: 1.1rem;
         color: #6c757d;
         margin-bottom: 2rem;
-        max-width: 600px;
+        max-width: 500px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -58,14 +59,16 @@
     }
     
     .btn-error {
-        padding: 0.8rem 1.8rem;
-        border-radius: 50px;
+        padding: 0.7rem 1.5rem;
+        border-radius: 8px;
         font-weight: 600;
         transition: all 0.3s ease;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        border: none;
+        cursor: pointer;
     }
     
     .btn-error i {
@@ -73,8 +76,7 @@
     }
     
     .btn-primary {
-        background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
-        border: none;
+        background: #4e54c8;
         color: white;
         box-shadow: 0 4px 15px rgba(78, 84, 200, 0.3);
     }
@@ -88,32 +90,25 @@
     .btn-error:hover {
         transform: translateY(-2px);
         box-shadow: 0 7px 20px rgba(0,0,0,0.15);
+        text-decoration: none;
     }
     
-    .book-character {
-        max-width: 250px;
+    .character-container {
+        max-width: 300px;
         margin: 0 auto 2rem;
         position: relative;
     }
     
-    .book {
+    .character {
         width: 100%;
         height: auto;
+        animation: bounce 2s infinite;
         filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
     }
     
-    .character {
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 70%;
-        animation: float 3s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-        0%, 100% { transform: translateX(-50%) translateY(0); }
-        50% { transform: translateX(-50%) translateY(-10px); }
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
     }
     
     @media (max-width: 768px) {
@@ -145,58 +140,29 @@
 <section class="error-page">
     <div class="container">
         <div class="error-container">
-            <div class="book-character">
-                <svg class="book" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Book -->
-                    <rect x="30" y="40" width="140" height="160" rx="5" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
-                    <path d="M40 50 L160 50" stroke="#dee2e6" stroke-width="1.5" stroke-linecap="round"/>
-                    <path d="M40 60 L160 60" stroke="#dee2e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="2,2"/>
-                    <path d="M40 70 L160 70" stroke="#dee2e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="2,2"/>
-                    <path d="M40 80 L160 80" stroke="#dee2e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="2,2"/>
-                    
-                    <!-- Character -->
-                    <g class="character" transform="translate(50, 90) scale(0.8)">
-                        <!-- Head -->
-                        <circle cx="50" cy="30" r="20" fill="#FFD3B6"/>
-                        
-                        <!-- Eyes -->
-                        <circle cx="42" cy="25" r="3" fill="#333"/>
-                        <circle cx="58" cy="25" r="3" fill="#333"/>
-                        
-                        <!-- Smile -->
-                        <path d="M42 35 Q50 42 58 35" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
-                        
-                        <!-- Body -->
-                        <path d="M50 50 L50 90" fill="none" stroke="#4e54c8" stroke-width="6" stroke-linecap="round"/>
-                        
-                        <!-- Arms -->
-                        <path d="M50 60 L30 50" fill="none" stroke="#4e54c8" stroke-width="6" stroke-linecap="round"/>
-                        <path d="M50 60 L70 50" fill="none" stroke="#4e54c8" stroke-width="6" stroke-linecap="round"/>
-                        
-                        <!-- Legs -->
-                        <path d="M50 90 L40 110" fill="none" stroke="#4e54c8" stroke-width="6" stroke-linecap="round"/>
-                        <path d="M50 90 L60 110" fill="none" stroke="#4e54c8" stroke-width="6" stroke-linecap="round"/>
-                        
-                        <!-- Book -->
-                        <rect x="30" y="40" width="40" height="50" rx="2" fill="#8f94fb" stroke="#4e54c8" stroke-width="2"/>
-                        <path d="M35 45 L65 45" stroke="#4e54c8" stroke-width="1"/>
-                        <path d="M35 50 L65 50" stroke="#4e54c8" stroke-width="0.5" stroke-dasharray="1,1"/>
-                        <path d="M35 55 L65 55" stroke="#4e54c8" stroke-width="0.5" stroke-dasharray="1,1"/>
-                        <path d="M35 60 L65 60" stroke="#4e54c8" stroke-width="0.5" stroke-dasharray="1,1"/>
-                        <path d="M35 65 L65 65" stroke="#4e54c8" stroke-width="0.5" stroke-dasharray="1,1"/>
-                    </g>
+            <div class="character-container">
+                <svg class="character" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Cabeza -->
+                    <circle cx="100" cy="80" r="40" fill="#FFD700" stroke="#000" stroke-width="2"/>
+                    <!-- Ojos -->
+                    <circle cx="85" cy="70" r="5" fill="#000"/>
+                    <circle cx="115" cy="70" r="5" fill="#000"/>
+                    <!-- Sonrisa -->
+                    <path d="M85 95 Q100 110 115 95" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+                    <!-- Cuerpo -->
+                    <path d="M100 120 L100 160 M80 130 L120 130 M80 150 L120 150" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+                    <!-- Brazos -->
+                    <path d="M60 100 L40 80 M60 100 L40 120" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M140 100 L160 80 M140 100 L160 120" stroke="#000" stroke-width="3" stroke-linecap="round"/>
                 </svg>
             </div>
-            
-            <h1 class="error-code">404</h1>
-            <h2 class="error-title">¡Ups! Página no encontrada</h2>
-            <p class="error-message">Parece que la página que estás buscando se ha perdido en los libros. No te preocupes, ¡nuestro pequeño amigo está buscándola!</p>
-            
+            <h1 class="error-title">¡Ups! Página no encontrada</h1>
+            <p class="error-message">La página que estás buscando no existe o ha sido movida. Por favor, verifica la URL o regresa a la página de inicio.</p>
             <div class="error-actions">
-                <a href="{% url 'appComunidad:index' %}" class="btn btn-error btn-primary">
-                    <i class="fas fa-home"></i> Volver al Inicio
+                <a href="{% url 'appComunidad:index' %}" class="btn-error btn-primary">
+                    <i class="fas fa-home"></i> Ir al Inicio
                 </a>
-                <a href="{% url 'appComunidad:contacto' %}" class="btn btn-error btn-outline-secondary">
+                <a href="{% url 'appComunidad:index' %}#contact" class="btn-error btn-outline-secondary">
                     <i class="fas fa-envelope"></i> Contactar Soporte
                 </a>
             </div>

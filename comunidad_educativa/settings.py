@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 # Set DEBUG to False to test 404 page in development
 # Remember to set this to False in production
-DEBUG = False
+DEBUG = True  # Cambiado a True para depuración
 
 # Configuración de CORS
 CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo
@@ -52,10 +52,8 @@ CSRF_COOKIE_SECURE = False    # Cambiar a True en producción con HTTPS
 ALLOWED_HOSTS = ["*"]  # En producción, especifica los dominios permitidos
 
 # Custom error handlers
-if not DEBUG:
-    # This will make Django show our custom 404 page even when DEBUG is False
-    import django.views.defaults
-    django.views.defaults.page_not_found = "comunidad_educativa.views.handler404"
+# La configuración de DEBUG se maneja al inicio del archivo
+# Los manejadores de error están configurados en urls.py
 
 # Application definition
 INSTALLED_APPS = [
@@ -71,6 +69,7 @@ INSTALLED_APPS = [
     "appEstudiantes",
     "appProfesores",
     # Third party apps
+    'widget_tweaks',
     # 'crispy_forms',
     # 'crispy_bootstrap4',
 ]
@@ -99,7 +98,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                # Procesador de contexto personalizado
                 "appComunidad.context_processors.user_redirect_processor",
             ],
             "builtins": [
