@@ -2,26 +2,205 @@
 
 {% block title %}Página no encontrada - ComunidadEducativa{% endblock %}
 
+{% block extra_css %}
+<style>
+    .error-page {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        padding: 3rem 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    .error-container {
+        text-align: center;
+        position: relative;
+        padding: 2rem;
+        border-radius: 15px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .error-code {
+        font-size: 8rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+        line-height: 1;
+    }
+    
+    .error-title {
+        font-size: 2.5rem;
+        color: #343a40;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+    }
+    
+    .error-message {
+        font-size: 1.25rem;
+        color: #6c757d;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .error-actions {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-error {
+        padding: 0.8rem 1.8rem;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .btn-error i {
+        margin-right: 8px;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+        border: none;
+        color: white;
+        box-shadow: 0 4px 15px rgba(78, 84, 200, 0.3);
+    }
+    
+    .btn-outline-secondary {
+        border: 2px solid #6c757d;
+        color: #6c757d;
+        background: transparent;
+    }
+    
+    .btn-error:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 20px rgba(0,0,0,0.15);
+    }
+    
+    .book-character {
+        max-width: 250px;
+        margin: 0 auto 2rem;
+        position: relative;
+    }
+    
+    .book {
+        width: 100%;
+        height: auto;
+        filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+    }
+    
+    .character {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 70%;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(-10px); }
+    }
+    
+    @media (max-width: 768px) {
+        .error-code {
+            font-size: 6rem;
+        }
+        
+        .error-title {
+            font-size: 2rem;
+        }
+        
+        .error-message {
+            font-size: 1.1rem;
+        }
+        
+        .error-actions {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .btn-error {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <div class="error-template py-5">
-                <h1 class="display-1 text-danger">404</h1>
-                <h2 class="display-4">¡Página no encontrada!</h2>
-                <div class="error-details my-4">
-                    <p class="lead">Lo sentimos, la página que estás buscando no existe o ha sido movida.</p>
-                </div>
-                <div class="error-actions mt-4">
-                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg me-3">
-                        <i class="fas fa-home me-2"></i>Ir al Inicio
-                    </a>
-                    <a href="{% url 'appComunidad:contacto' %}" class="btn btn-outline-secondary btn-lg">
-                        <i class="fas fa-envelope me-2"></i>Contactar Soporte
-                    </a>
-                </div>
+<section class="error-page">
+    <div class="container">
+        <div class="error-container">
+            <div class="book-character">
+                <svg class="book" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Book -->
+                    <rect x="30" y="40" width="140" height="160" rx="5" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+                    <path d="M40 50 L160 50" stroke="#dee2e6" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M40 60 L160 60" stroke="#dee2e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="2,2"/>
+                    <path d="M40 70 L160 70" stroke="#dee2e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="2,2"/>
+                    <path d="M40 80 L160 80" stroke="#dee2e6" stroke-width="1" stroke-linecap="round" stroke-dasharray="2,2"/>
+                    
+                    <!-- Character -->
+                    <g class="character" transform="translate(50, 90) scale(0.8)">
+                        <!-- Head -->
+                        <circle cx="50" cy="30" r="20" fill="#FFD3B6"/>
+                        
+                        <!-- Eyes -->
+                        <circle cx="42" cy="25" r="3" fill="#333"/>
+                        <circle cx="58" cy="25" r="3" fill="#333"/>
+                        
+                        <!-- Smile -->
+                        <path d="M42 35 Q50 42 58 35" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+                        
+                        <!-- Body -->
+                        <path d="M50 50 L50 90" fill="none" stroke="#4e54c8" stroke-width="6" stroke-linecap="round"/>
+                        
+                        <!-- Arms -->
+                        <path d="M50 60 L30 50" fill="none" stroke="#4e54c8" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M50 60 L70 50" fill="none" stroke="#4e54c8" stroke-width="6" stroke-linecap="round"/>
+                        
+                        <!-- Legs -->
+                        <path d="M50 90 L40 110" fill="none" stroke="#4e54c8" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M50 90 L60 110" fill="none" stroke="#4e54c8" stroke-width="6" stroke-linecap="round"/>
+                        
+                        <!-- Book -->
+                        <rect x="30" y="40" width="40" height="50" rx="2" fill="#8f94fb" stroke="#4e54c8" stroke-width="2"/>
+                        <path d="M35 45 L65 45" stroke="#4e54c8" stroke-width="1"/>
+                        <path d="M35 50 L65 50" stroke="#4e54c8" stroke-width="0.5" stroke-dasharray="1,1"/>
+                        <path d="M35 55 L65 55" stroke="#4e54c8" stroke-width="0.5" stroke-dasharray="1,1"/>
+                        <path d="M35 60 L65 60" stroke="#4e54c8" stroke-width="0.5" stroke-dasharray="1,1"/>
+                        <path d="M35 65 L65 65" stroke="#4e54c8" stroke-width="0.5" stroke-dasharray="1,1"/>
+                    </g>
+                </svg>
+            </div>
+            
+            <h1 class="error-code">404</h1>
+            <h2 class="error-title">¡Ups! Página no encontrada</h2>
+            <p class="error-message">Parece que la página que estás buscando se ha perdido en los libros. No te preocupes, ¡nuestro pequeño amigo está buscándola!</p>
+            
+            <div class="error-actions">
+                <a href="{% url 'appComunidad:index' %}" class="btn btn-error btn-primary">
+                    <i class="fas fa-home"></i> Volver al Inicio
+                </a>
+                <a href="{% url 'appComunidad:contacto' %}" class="btn btn-error btn-outline-secondary">
+                    <i class="fas fa-envelope"></i> Contactar Soporte
+                </a>
             </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}

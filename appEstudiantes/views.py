@@ -107,15 +107,52 @@ def perfil(request: HttpRequest) -> HttpResponse:
             files=request.FILES,
             instance=perfil_estudiante,
         )
+        
+        # Check if this is an AJAX request (for photo upload)
+        is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+        
         if form.is_valid():
-            perfil_actualizado = form.save(commit=False)
-            perfil_actualizado.usuario = request.user
-            perfil_actualizado.save()
-            messages.success(
-                request,
-                "Tu perfil ha sido actualizado correctamente.",
-            )
-            return redirect("appEstudiantes:perfil")
+            try:
+                perfil_actualizado = form.save(commit=False)
+                perfil_actualizado.usuario = request.user
+                
+                # Handle file upload
+                if "foto" in request.FILES:
+                    # Delete old photo if it's not the default one
+                    if perfil_estudiante.foto and perfil_estudiante.foto.name != "default_profile.png":
+                        perfil_estudiante.foto.delete(save=False)
+                
+                perfil_actualizado.save()
+                
+                messages.success(
+                    request,
+                    "Tu perfil ha sido actualizado correctamente.",
+                    extra_tags="success",
+                )
+                
+                if is_ajax:
+                    return JsonResponse({
+                        "success": True,
+                        "message": "Foto de perfil actualizada correctamente.",
+                        "foto_url": perfil_actualizado.foto.url if perfil_actualizado.foto else "",
+                    })
+                    
+                return redirect("appEstudiantes:perfil")
+                
+            except Exception as e:
+                error_msg = f"Error al actualizar el perfil: {e!s}"
+                messages.error(request, error_msg, extra_tags="danger")
+                if is_ajax:
+                    return JsonResponse({"success": False, "message": error_msg}, status=400)
+        else:
+            error_msg = "Por favor, corrige los errores en el formulario."
+            if is_ajax:
+                return JsonResponse({
+                    "success": False,
+                    "message": error_msg,
+                    "errors": form.errors,
+                }, status=400)
+            messages.error(request, error_msg, extra_tags="danger")
     else:
         form = PerfilEstudianteForm(instance=perfil_estudiante)
 
@@ -123,6 +160,12 @@ def perfil(request: HttpRequest) -> HttpResponse:
         "form": form,
         "perfil": perfil_estudiante,
     }
+    
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return JsonResponse({
+            "success": False,
+            "message": "Método no permitido o error en la solicitud.",
+        }, status=400)
 
     return render(
         request,
@@ -240,6 +283,19 @@ def curso_detalle(request: HttpRequest, pk: int) -> HttpResponse:
         leccion__curso=curso,
     ).select_related("estudiante", "leccion")
 
+    # Calcular progreso del curso si el usuario está inscrito
+    total_lecciones = lecciones.count()
+    lecciones_completadas = 0
+    porcentaje_completado = 0
+    
+    if esta_inscrito and total_lecciones > 0:
+        lecciones_completadas = ProgresoLeccion.objects.filter(
+            estudiante=request.user,
+            leccion__curso=curso,
+            completado=True,
+        ).count()
+        porcentaje_completado = (lecciones_completadas / total_lecciones) * 100
+
     # Formulario para comentarios
     form_comentario = ComentarioForm()
 
@@ -249,6 +305,9 @@ def curso_detalle(request: HttpRequest, pk: int) -> HttpResponse:
         "lecciones": lecciones,
         "comentarios": comentarios,
         "form_comentario": form_comentario,
+        "total_lecciones": total_lecciones,
+        "lecciones_completadas": lecciones_completadas,
+        "porcentaje_completado": round(porcentaje_completado, 2),
     }
     return render(request, "appEstudiantes/curso_detalle.html", context)
 

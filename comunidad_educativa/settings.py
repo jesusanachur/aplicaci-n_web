@@ -25,7 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Set DEBUG to False to test 404 page in development
+# Remember to set this to False in production
+DEBUG = False
 
 # Configuración de CORS
 CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo
@@ -48,6 +50,12 @@ SESSION_COOKIE_SECURE = False  # Cambiar a True en producción con HTTPS
 CSRF_COOKIE_SECURE = False    # Cambiar a True en producción con HTTPS
 
 ALLOWED_HOSTS = ["*"]  # En producción, especifica los dominios permitidos
+
+# Custom error handlers
+if not DEBUG:
+    # This will make Django show our custom 404 page even when DEBUG is False
+    import django.views.defaults
+    django.views.defaults.page_not_found = "comunidad_educativa.views.handler404"
 
 # Application definition
 INSTALLED_APPS = [

@@ -5,59 +5,266 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/students.css' %}">
 <style>
+    :root {
+        --primary-color: #4e54c8;
+        --secondary-color: #8f94fb;
+        --success-color: #28a745;
+        --light-color: #f8f9fa;
+        --dark-color: #343a40;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+    
     .hero-section {
-        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         color: white;
-        padding: 4rem 0;
+        padding: 5rem 0 4rem;
         margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c0-1.657-1.343-3-3-3s-3 1.343-3 3 1.343 3 3 3 3-1.343 3-3zm93-1c0-1.657-1.343-3-3-3s-3 1.343-3 3 1.343 3 3 3 3-1.343 3-3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.5;
+    }
+    
+    .hero-section .container {
+        position: relative;
+        z-index: 1;
     }
     
     .course-features {
-        background-color: #f8f9fa;
-        border-radius: 10px;
+        background-color: white;
+        border-radius: var(--border-radius);
         padding: 2rem;
         margin-bottom: 2rem;
+        box-shadow: var(--box-shadow);
+        transition: var(--transition);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .course-features:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
     
     .feature-icon {
         font-size: 2.5rem;
-        color: #2575fc;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         margin-bottom: 1rem;
+        display: inline-block;
     }
     
     .testimonial-card {
         background: white;
-        border-radius: 10px;
+        border-radius: var(--border-radius);
         padding: 1.5rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: var(--box-shadow);
         margin-bottom: 1.5rem;
         height: 100%;
+        transition: var(--transition);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .testimonial-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     }
     
     .testimonial-text {
         font-style: italic;
         margin-bottom: 1rem;
+        color: #555;
+        line-height: 1.7;
     }
     
     .testimonial-author {
         font-weight: 600;
-        color: #333;
+        color: var(--dark-color);
+        margin-bottom: 0.25rem;
     }
     
     .enroll-cta {
-        background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
         color: white;
-        padding: 2rem;
-        border-radius: 10px;
+        padding: 2.5rem 2rem;
+        border-radius: var(--border-radius);
         text-align: center;
-        margin: 2rem 0;
+        margin: 2.5rem 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(78, 84, 200, 0.3);
+    }
+    
+    .enroll-cta h3 {
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    
+    .enroll-cta p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Enhanced Progress Bar Styles */
+    .course-progress {
+        background: white;
+        padding: 1.25rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .progress-label {
+        margin-bottom: 0.75rem;
+    }
+    
+    .progress-label span:first-child {
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+    
+    .progress-label span:last-child {
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    .progress {
+        height: 10px;
+        border-radius: 5px;
+        background-color: #f0f2f5;
+        overflow: visible;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .progress-bar {
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        border-radius: 5px;
+        position: relative;
+        overflow: visible;
+        transition: width 1s ease-in-out;
+    }
+    
+    .progress-bar::after {
+        content: '';
+        position: absolute;
+        right: -5px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--secondary-color);
+        border: 3px solid white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    .progress-detail {
+        margin-top: 0.75rem;
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    
+    /* Card Styles */
+    .card {
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        transition: var(--transition);
+    }
+    
+    .card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .card-header {
+        background-color: white;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 1.25rem 1.5rem;
+        font-weight: 600;
+    }
+    
+    .card-header.bg-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+    }
+    
+    /* Buttons */
+    .btn {
+        border-radius: 50px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 500;
+        transition: var(--transition);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        box-shadow: 0 4px 15px rgba(78, 84, 200, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 20px rgba(78, 84, 200, 0.4);
+    }
+    
+    /* Breadcrumb */
+    .breadcrumb {
+        background: transparent;
+        padding: 0;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .breadcrumb-item a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    
+    .breadcrumb-item a:hover {
+        color: white;
+        text-decoration: underline;
+    }
+    
+    .breadcrumb-item.active {
+        color: white;
+        font-weight: 500;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 767.98px) {
+        .hero-section {
+            padding: 3.5rem 0;
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 2rem;
+        }
+        
+        .enroll-cta {
+            padding: 2rem 1.5rem;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-section">
+<section class="hero-section mb-5">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
@@ -339,24 +546,22 @@
                                     <span>Ya estás inscrito en este curso</span>
                                 </div>
                                 
-                                {% with total_lecciones=lecciones.count %}
-                                {% with completadas=user.progreso_lecciones.filter(leccion__curso=curso, completado=True).count %}
-                                {% with porcentaje=completadas|default:0|floatformat:0 %}
                                 <div class="course-progress mb-3">
                                     <div class="progress-label d-flex justify-content-between mb-1">
                                         <span>Progreso</span>
-                                        <span>{{ porcentaje }}%</span>
+                                        <span>{{ porcentaje_completado|floatformat:0 }}%</span>
                                     </div>
                                     <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: {{ porcentaje }}%;" aria-valuenow="{{ porcentaje }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ porcentaje_completado }}%;" aria-valuenow="{{ porcentaje_completado|floatformat:0 }}" aria-valuemin="0" aria-valuemax="100" data-width="{{ porcentaje_completado }}">
+                                                <span class="progress-text">{{ porcentaje_completado|floatformat:0 }}%</span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="progress-detail text-center mt-1">
-                                        <small>{{ completadas }} de {{ total_lecciones }} lecciones completadas</small>
+                                        <small>{{ lecciones_completadas }} de {{ total_lecciones }} lecciones completadas</small>
                                     </div>
                                 </div>
-                                {% endwith %}
-                                {% endwith %}
-                                {% endwith %}
                                 
                                 {% if lecciones %}
                                     <a href="{% url 'appEstudiantes:leccion_detalle' curso.id lecciones.0.id %}" class="btn btn-primary w-100">
