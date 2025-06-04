@@ -271,24 +271,21 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
 def handler404(request: HttpRequest, exception=None) -> HttpResponse:
     """Maneja errores 404."""
-    # Asegurarse de que la respuesta tenga el código de estado 404
     response = render(
         request,
         "404.html",
-        context={"title": "Página no encontrada"},
+        status=404,
     )
-    response.status_code = 404
     return response
 
 
 def handler500(request: HttpRequest) -> HttpResponse:
     """Maneja errores 500."""
     response = render(
-        request=request,
-        template_name="500.html",
-        context={"title": "Error del servidor"},
+        request,
+        "500.html",
+        status=500,
     )
-    response.status_code = 500
     return response
 
 

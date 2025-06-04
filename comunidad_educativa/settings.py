@@ -27,7 +27,14 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 # Set DEBUG to False to test 404 page in development
 # Remember to set this to False in production
-DEBUG = True  # Cambiado a True para depuración
+DEBUG = False  # Changed to False to see custom 404 page
+
+# Host/domain names that this Django site can serve
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+# Custom 404 page handler
+handler404 = 'comunidad_educativa.views.handler404'
+handler500 = 'comunidad_educativa.views.handler500'
 
 # Configuración de CORS
 CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo
