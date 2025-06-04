@@ -26,7 +26,8 @@ exclude = [
    "node_modules",
    "site-packages",
    "venv",
-   "appProfesores/migrations",
+   "appProfesores/migrations", #se ignoran  por defecto de django 
+   
    "appEstudiantes/migrations",
    "appComunidad/migrations",
 
