@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
 
 {% block title %}Mi Perfil - ComunidadEducativa{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="/static/css/students.css">
+<link rel="stylesheet" href="{% static 'css/students.css' %}">
 {% endblock %}
 
 {% block content %}
