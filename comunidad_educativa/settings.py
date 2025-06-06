@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Custom apps
+    "comunidad_educativa.apps.ComunidadEducativaConfig",
     "appComunidad",
     "appEstudiantes",
     "appProfesores",
