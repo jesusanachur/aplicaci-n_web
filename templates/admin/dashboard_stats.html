@@ -1,0 +1,157 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css" rel="stylesheet">
+<style>
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #3498db;
+        margin: 10px 0;
+    }
+    
+    .stat-label {
+        color: #666;
+        font-size: 1rem;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .chart-title {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 1.2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{{ title }}</h1>
+    
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-value">{{ user_count }}</div>
+            <div class="stat-label">Usuarios Totales</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-value">{{ active_users }}</div>
+            <div class="stat-label">Usuarios Activos (30 días)</div>
+        </div>
+        
+        <!-- Agrega más tarjetas de estadísticas según sea necesario -->
+    </div>
+    
+    <div class="chart-container">
+        <h2 class="chart-title">Nuevos Usuarios (últimos 7 días)</h2>
+        <canvas id="newUsersChart"></canvas>
+    </div>
+    
+    <div class="chart-container">
+        <h2 class="chart-title">Inicios de Sesión (últimos 7 días)</h2>
+        <canvas id="loginsChart"></canvas>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Pasar datos de Django a JavaScript
+    const newUsersData = JSON.parse('{{ new_users_data|escapejs|default:"[]" }}');
+    const loginData = JSON.parse('{{ login_data|escapejs|default:"[]" }}');
+    
+    // Extraer etiquetas y valores para nuevas usuarios
+    const newUsersLabels = newUsersData.map(item => item.date);
+    const newUsersValues = newUsersData.map(item => item.count);
+    
+    // Extraer etiquetas y valores para inicios de sesión
+    const loginLabels = loginData.map(item => item.date);
+    const loginValues = loginData.map(item => item.count);
+    
+    // Datos para la gráfica de nuevos usuarios
+    const newUsersCtx = document.getElementById('newUsersChart');
+    if (newUsersCtx) {
+        new Chart(newUsersCtx, {
+            type: 'bar',
+            data: {
+                labels: newUsersLabels,
+                datasets: [{
+                    label: 'Nuevos Usuarios',
+                    data: newUsersValues,
+                    backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Datos para la gráfica de inicios de sesión
+    const loginsCtx = document.getElementById('loginsChart');
+    if (loginsCtx) {
+        new Chart(loginsCtx, {
+            type: 'line',
+            data: {
+                labels: loginLabels,
+                datasets: [{
+                    label: 'Inicios de Sesión',
+                    data: loginValues,
+                    fill: false,
+                    borderColor: 'rgba(46, 204, 113, 1)',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

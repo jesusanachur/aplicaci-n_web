@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 # Set DEBUG to False to test 404 page in development
 # Remember to set this to False in production
-DEBUG = False  # Changed to False to see custom 404 page
+DEBUG = True  # Cambiado a True para desarrollo
 
 # Host/domain names that this Django site can serve
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
@@ -64,23 +64,35 @@ ALLOWED_HOSTS = ["*"]  # En producción, especifica los dominios permitidos
 
 # Application definition
 INSTALLED_APPS = [
-    "corsheaders",
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    # Custom apps
-    "comunidad_educativa.apps.ComunidadEducativaConfig",
-    "appComunidad",
-    "appEstudiantes",
-    "appProfesores",
-    # Third party apps
+    # Deben ir primero
+    'admin_interface',
+    'colorfield',
+    'django.contrib.admin',
+    # Aplicaciones estándar de Django
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'corsheaders',
+    # Aplicaciones personalizadas
+    'comunidad_educativa.apps.ComunidadEducativaConfig',
+    'appComunidad',
+    'appEstudiantes',
+    'appProfesores',
+    # Otras aplicaciones de terceros
     'widget_tweaks',
     # 'crispy_forms',
     # 'crispy_bootstrap4',
 ]
+
+# Configuración de Admin Interface
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+SILENCED_SYSTEM_CHECKS = ['security.W019']
+
+# Tema claro por defecto
+ADMIN_INTERFACE_THEME = 'default'
+# O puedes elegir otros temas como: 'dark', 'light', 'modern', 'ocean', 'solar', 'summer', 'spring', 'winter', 'autumn', 'violet'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -95,10 +107,20 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "comunidad_educativa.urls"
 
+# Configuración personalizada del sitio
+SITE_NAME = "Comunidad Educativa"
+SITE_HEADER = "Panel de Administración"
+SITE_TITLE = "Sistema de Gestión Educativa"
+INDEX_TITLE = "Bienvenido al Panel de Control"
+SITE_URL = "/"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [
+            BASE_DIR / "templates",
+            BASE_DIR / "templates/admin",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -107,10 +129,15 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "appComunidad.context_processors.user_redirect_processor",
+                "comunidad_educativa.context_processors.admin_site_info",
             ],
             "builtins": [
                 "appEstudiantes.templatetags.custom_filters",
             ],
+            'libraries': {
+                'admin_modify': 'django.contrib.admin.templatetags.admin_modify',
+                'admin_urls': 'django.contrib.admin.templatetags.admin_urls',
+            },
         },
     },
 ]

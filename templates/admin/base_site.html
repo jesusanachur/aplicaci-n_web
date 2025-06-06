@@ -1,20 +1,444 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{% block title %}{{ title }} | {{ site_title|default:_('Sitio de Administración') }}{% endblock %}
-
-{% block branding %}
-<h1 id="site-name">
-    <a href="{% url 'admin:index' %}">
-        <img src="{% static 'img/logo.png' %}" height="40px" style="margin-right: 10px; vertical-align: middle;" />
-        {{ site_header|default:_('Administración') }}
-    </a>
-</h1>
-{% endblock %}
+{% block title %}{{ title }} | {{ site_title|default:_('Administración') }}{% endblock %}
 
 {% block extrastyle %}
 {{ block.super }}
-<link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons|Roboto:300,400,500,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'admin/css/admin_custom.css' %}">
+<style>
+    :root {
+        --primary: #4a6cf7;
+        --primary-hover: #3a5ce4;
+        --secondary: #6c757d;
+        --success: #28a745;
+        --info: #17a2b8;
+        --warning: #ffc107;
+        --danger: #dc3545;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --sidebar-width: 250px;
+        --header-height: 60px;
+    }
+    
+    /* Estilos generales */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f5f7fb;
+    }
+    
+    /* Encabezado */
+    #header {
+        background: var(--dark);
+        color: white;
+        height: var(--header-height);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+    
+    /* Logo del sitio */
+    #site-name {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: white !important;
+    }
+    
+    #site-name a {
+        color: white !important;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+    
+    #site-name a:hover {
+        color: var(--light) !important;
+    }
+    
+    /* Herramientas de usuario */
+    #user-tools {
+        margin-left: auto;
+        font-weight: 400;
+    }
+    
+    #user-tools a:link, #user-tools a:visited {
+        color: white;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    #user-tools a:hover {
+        color: var(--light) !important;
+        border-bottom-color: white;
+    }
+    
+    /* Botones */
+    .submit-row input[type="submit"],
+    button, input[type="submit"], input[type="button"], .submit-row input {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .submit-row input[type="submit"]:hover,
+    button:hover, input[type="submit"]:hover, input[type="button"]:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .submit-row input.default {
+        background: var(--success);
+    }
+    
+    .submit-row input.default:hover {
+        background: #218838;
+    }
+    
+    /* Campos de formulario */
+    input[type="text"], input[type="password"], input[type="email"], input[type="url"],
+    input[type="number"], input[type="tel"], textarea, select, .vTextField {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+    
+    input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus,
+    input[type="url"]:focus, input[type="number"]:focus, input[type="tel"]:focus,
+    textarea:focus, select:focus, .vTextField:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.25);
+        outline: none;
+    }
+    
+    /* Barra de búsqueda */
+    #searchbar {
+        padding: 8px 15px;
+        border-radius: 20px;
+        border: 1px solid #ddd;
+        transition: all 0.3s;
+        background-color: white;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: 12px center;
+        padding-left: 40px;
+        width: 250px;
+    }
+    
+    #searchbar:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.25);
+        outline: none;
+        width: 300px;
+    }
+    
+    /* Tablas */
+    #result_list {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    #result_list th, #result_list td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    #result_list th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: var(--dark);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+    
+    #result_list tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    /* Tarjetas de resumen */
+    .dashboard .module {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .dashboard .module:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dashboard .module h2, .module h2 {
+        background: var(--dark);
+        color: white;
+        padding: 12px 15px;
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+    
+    .dashboard .module table {
+        width: 100%;
+    }
+    
+    /* Filtros laterales */
+    #changelist-filter h2 {
+        font-size: 0.9rem;
+        margin: 0 0 10px 0;
+        padding: 10px 15px;
+        background: var(--secondary);
+        color: white;
+        border-radius: 4px 4px 0 0;
+    }
+    
+    #changelist-filter ul {
+        padding: 0;
+        margin: 0;
+    }
+    
+    #changelist-filter li {
+        list-style: none;
+        margin: 0;
+    }
+    
+    #changelist-filter a {
+        display: block;
+        padding: 8px 15px;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.2s;
+        border-radius: 3px;
+    }
+    
+    #changelist-filter a:hover, #changelist-filter li.selected a {
+        background: var(--primary);
+        color: white;
+    }
+    
+    /* Mejoras en los mensajes */
+    .messagelist li {
+        padding: 12px 20px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        font-weight: 500;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Mejoras en los campos de formulario */
+    .form-row {
+        margin-bottom: 15px;
+    }
+    
+    .form-row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    
+    /* Mejoras en los campos de fecha/hora */
+    .datetime {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        margin: 5px 0;
+    }
+    
+    /* Mejoras en los campos de relación */
+    .related-widget-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .related-widget-wrapper-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .related-widget-wrapper-link:hover {
+        background: var(--primary-hover);
+        transform: scale(1.1);
+    }
+    
+    /* Mejoras en los campos de selección múltiple */
+    .selector {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        margin: 5px 0;
+    }
+    
+    .selector select {
+        width: 100%;
+        min-height: 100px;
+    }
+    
+    .selector-available, .selector-chosen {
+        width: 45%;
+        float: left;
+    }
+    
+    .selector-choose, .selector-remove, .selector-clearall, .selector-chooseall {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+        text-align: center;
+    }
+    
+    /* Mejoras en los campos de archivo e imagen */
+    .file-upload a {
+        display: inline-block;
+        margin-top: 5px;
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .file-upload a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Mejoras en los campos de imagen */
+    .image-preview-container {
+        margin: 10px 0;
+    }
+    
+    .image-preview-container img {
+        max-width: 200px;
+        max-height: 200px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        padding: 5px;
+        background: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .image-preview-container img:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Responsive */
+    @media (max-width: 1024px) {
+        #content {
+            padding: 20px 15px;
+        }
+        
+        #searchbar {
+            width: 200px;
+        }
+        
+        #searchbar:focus {
+            width: 250px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        #header {
+            flex-direction: column;
+            height: auto;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        #user-tools {
+            margin: 10px 0 0;
+            text-align: center;
+        }
+        
+        #searchbar {
+            width: 100%;
+            max-width: 100%;
+            margin: 10px 0;
+        }
+        
+        #searchbar:focus {
+            width: 100%;
+        }
+        
+        .filtered .results, .filtered .paginator, 
+        .filtered .actions, .filtered .xfull {
+            margin-right: 0 !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<div style="display: flex; align-items: center; gap: 10px;">
+    <img src="{% static 'img/logo.png' %}" alt="Logo" height="40" style="border-radius: 4px;">
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}" style="color: white; text-decoration: none;">
+            {{ site_header|default:_('Administración') }}
+        </a>
+    </h1>
+</div>
+{% endblock %}
+
+{% block welcome-msg %}
+    <span class="material-icons" style="vertical-align: middle; margin-right: 5px;">person</span>
+    {% firstof user.get_short_name user.get_username %}.
+{% endblock %}
+
+{% block userlinks %}
+    {% if site_url %}
+        <a href="{{ site_url }}" style="display: inline-flex; align-items: center; gap: 3px;">
+            <span class="material-icons" style="font-size: 1.1em;">home</span>
+            Ver sitio
+        </a> / 
+    {% endif %}
+    {% if user.is_active and user.is_staff %}
+        {% url 'django-admindocs-docroot' as docsroot %}
+        {% if docsroot %}
+            <a href="{{ docsroot }}" style="display: inline-flex; align-items: center; gap: 3px;">
+                <span class="material-icons" style="font-size: 1.1em;">menu_book</span>
+                Documentación
+            </a> / 
+        {% endif %}
+    {% endif %}
+    {% if user.has_usable_password %}
+        <a href="{% url 'admin:password_change' %}" style="display: inline-flex; align-items: center; gap: 3px;">
+            <span class="material-icons" style="font-size: 1.1em;">lock</span>
+            Cambiar contraseña
+        </a> / 
+    {% endif %}
+    <a href="{% url 'admin:logout' %}" style="display: inline-flex; align-items: center; gap: 3px;">
+        <span class="material-icons" style="font-size: 1.1em;">exit_to_app</span>
+        Cerrar sesión
+    </a>
 {% endblock %}
 
 {% block nav-global %}

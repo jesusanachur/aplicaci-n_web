@@ -1,0 +1,5 @@
+# Dependencias para el panel de administración personalizado
+Django>=4.2.0
+Pillow>=9.0.0  # Para manejo de imágenes
+python-dateutil>=2.8.2  # Para manejo de fechas
+# Agrega aquí otras dependencias específicas del panel de administración
