@@ -1,0 +1,25 @@
+🌍 Aprende Español - Plataforma de Aprendizaje con Django  
+
+**Descripción**:  
+Aplicación web desarrollada con **Django** para enseñar español de manera interactiva. Incluye lecciones, ejercicios prácticos, quizzes y seguimiento del progreso del usuario.  
+
+---  
+
+## 🛠 Stack Tecnológico  
+| **Frontend**  | **Backend**       | **Base de Datos** | **Herramientas**      |  
+|---------------|-------------------|-------------------|-----------------------|  
+| HTML5         | Python + Django   | PostgreSQL        | Git + GitHub          |  
+| CSS3          | Django REST       | SQLite (dev)      | Figma (diseño)        |  
+| JavaScript    |                   |                   | VS Code               |  
+
+---  
+
+## ✨ Características Principales  
+✅ **Autenticación de usuarios**: Registro, login y recuperación de contraseña.  
+✅ **Lecciones por niveles**: Desde básico (A1) hasta avanzado (C1).  
+✅ **Ejercicios interactivos**:  
+   - Flashcards de vocabulario.  
+   - Quizzes con retroalimentación instantánea.  
+   - Grabaciones para practicar pronunciación (usando Web API de JS).  
+✅ **Panel de progreso**: Gráficos y estadísticas de aprendizaje.  
+✅ **Diseño responsive**: Compatible con móviles y tablets.  
