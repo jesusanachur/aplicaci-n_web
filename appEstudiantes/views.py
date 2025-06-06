@@ -18,6 +18,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, QuerySet
 from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.generic import ListView
@@ -100,6 +101,9 @@ def perfil(request: HttpRequest) -> HttpResponse:
             "idioma_nativo": "",
         },
     )
+
+    if created:
+        request.user = User.objects.get(pk=request.user.pk) # Refresh user to load related profile
 
     if request.method == "POST":
         form = PerfilEstudianteForm(

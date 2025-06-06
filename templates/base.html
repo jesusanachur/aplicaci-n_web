@@ -74,6 +74,10 @@
                                         <li><a class="dropdown-item" href="{% url 'appProfesores:cursos' %}">
                                             <i class="fas fa-chalkboard-teacher me-2"></i>Mis Cursos
                                         </a></li>
+                                    {% else %}
+                                        <li><a class="dropdown-item" href="{% url 'appEstudiantes:perfil' %}">
+                                            <i class="fas fa-user-circle me-2"></i>Ver Perfil General
+                                        </a></li>
                                     {% endif %}
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'logout' %}">

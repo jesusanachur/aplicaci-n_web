@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil del Estudiante{% endblock %}
+
+{% block content %}
+<h1>Perfil del Estudiante</h1>
+<p>Este es el perfil del estudiante.</p>
+<!-- Contenido del formulario de perfil irá aquí -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar Cambios</button>
+</form>
+
+<p><a href="{% url 'appEstudiantes:dashboard' %}">Volver al Dashboard</a></p>
+{% endblock %}
